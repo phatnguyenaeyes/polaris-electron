@@ -108,7 +108,7 @@ export function AppRouter() {
       <Routes>
         <Route path={NFT_DASHBOARD_PATH} element={protectedLayout}>
           {/* <Route index element={<NftDashboard />} /> */}
-          <Route index element={<Navigate to="/livestream" replace />} />
+          <Route index element={<Navigate to="livestream" replace />} />
           <Route path="livestream">
             <Route path="" element={<Livestream />} />
             <Route path="create" element={<LivestreamCreate />} />

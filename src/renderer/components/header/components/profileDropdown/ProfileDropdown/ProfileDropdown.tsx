@@ -14,7 +14,7 @@ export const ProfileDropdown: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
 
   return user ? (
-    <BasePopover content={<ProfileOverlay />} trigger="click" open={false}>
+    <BasePopover content={<ProfileOverlay />} trigger="click">
       <S.ProfileDropdownHeader as={BaseRow} gutter={[10, 10]} align="middle">
         <BaseCol>
           <BaseAvatar

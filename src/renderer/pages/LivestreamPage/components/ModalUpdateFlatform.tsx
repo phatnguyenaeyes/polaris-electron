@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import * as S from '../Livestream.styles';
 import { useTranslation } from 'react-i18next';
 
-const BASE_URL = process.env.REACT_APP_BASE_URL;
+const BASE_URL = 'https://staging.polarista.ai';
 
 interface UpdateFlatformFormInterface {
   fullLinkYoutube: string;
@@ -29,26 +29,40 @@ interface ModalUpdateFlatformProps {
 }
 
 // http://3.1.222.157/render?live_setting=
-const ModalUpdateFlatform: React.FC<ModalUpdateFlatformProps> = ({ open, livestreamData, onClose, onSuccess }) => {
+const ModalUpdateFlatform: React.FC<ModalUpdateFlatformProps> = ({
+  open,
+  livestreamData,
+  onClose,
+  onSuccess,
+}) => {
   const { t } = useTranslation();
 
   const formSchema = yup.object().shape(
     {
-      fullLinkYoutube: yup.string().when(['fullLinkTwitter', 'fullLinkTelegram'], {
-        is: (fullLinkTwitter: string, fullLinkTelegram: string) => !fullLinkTwitter && !fullLinkTelegram,
-        then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-        otherwise: yup.string(),
-      }),
-      fullLinkTwitter: yup.string().when(['fullLinkYoutube', 'fullLinkTelegram'], {
-        is: (fullLinkYoutube: string, fullLinkTelegram: string) => !fullLinkYoutube && !fullLinkTelegram,
-        then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-        otherwise: yup.string(),
-      }),
-      fullLinkTelegram: yup.string().when(['fullLinkYoutube', 'fullLinkTwitter'], {
-        is: (fullLinkYoutube: string, fullLinkTwitter: string) => !fullLinkYoutube && !fullLinkTwitter,
-        then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-        otherwise: yup.string(),
-      }),
+      fullLinkYoutube: yup
+        .string()
+        .when(['fullLinkTwitter', 'fullLinkTelegram'], {
+          is: (fullLinkTwitter: string, fullLinkTelegram: string) =>
+            !fullLinkTwitter && !fullLinkTelegram,
+          then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          otherwise: yup.string(),
+        }),
+      fullLinkTwitter: yup
+        .string()
+        .when(['fullLinkYoutube', 'fullLinkTelegram'], {
+          is: (fullLinkYoutube: string, fullLinkTelegram: string) =>
+            !fullLinkYoutube && !fullLinkTelegram,
+          then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          otherwise: yup.string(),
+        }),
+      fullLinkTelegram: yup
+        .string()
+        .when(['fullLinkYoutube', 'fullLinkTwitter'], {
+          is: (fullLinkYoutube: string, fullLinkTwitter: string) =>
+            !fullLinkYoutube && !fullLinkTwitter,
+          then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          otherwise: yup.string(),
+        }),
     },
     [
       ['fullLinkYoutube', 'fullLinkTwitter'],
@@ -89,7 +103,12 @@ const ModalUpdateFlatform: React.FC<ModalUpdateFlatformProps> = ({ open, livestr
     } catch (error) {}
   };
   return (
-    <BaseModal title={t('POLARIS.START_LIVE_STREAM')} open={open} onCancel={onClose} footer={null}>
+    <BaseModal
+      title={t('POLARIS.START_LIVE_STREAM')}
+      open={open}
+      onCancel={onClose}
+      footer={null}
+    >
       <FormProvider {...formMethods}>
         <S.LivestreamLinkWrapper>
           <span>
@@ -99,7 +118,9 @@ const ModalUpdateFlatform: React.FC<ModalUpdateFlatformProps> = ({ open, livestr
             onClick={async () => {
               try {
                 await window.navigator.clipboard.writeText(
-                  `${BASE_URL}/render?live_setting=${livestreamData?._id || ''}`,
+                  `${BASE_URL}/render?live_setting=${
+                    livestreamData?._id || ''
+                  }`,
                 );
                 notificationController.success({
                   message: 'Đã sao chép',
@@ -116,13 +137,25 @@ const ModalUpdateFlatform: React.FC<ModalUpdateFlatformProps> = ({ open, livestr
         <form onSubmit={formMethods.handleSubmit(onCreateSubmitForm)}>
           <Row gutter={24}>
             <Col span={24} lg={24}>
-              <TextField label="Link youtube" name="fullLinkYoutube" placeholder="Nhập link youtube" />
+              <TextField
+                label="Link youtube"
+                name="fullLinkYoutube"
+                placeholder="Nhập link youtube"
+              />
             </Col>
             <Col span={24} lg={24}>
-              <TextField label="Link twitter" name="fullLinkTwitter" placeholder="Nhập link twitter" />
+              <TextField
+                label="Link twitter"
+                name="fullLinkTwitter"
+                placeholder="Nhập link twitter"
+              />
             </Col>
             <Col span={24} lg={24}>
-              <TextField label="Link telegram" name="fullLinkTelegram" placeholder="Nhập link telegram" />
+              <TextField
+                label="Link telegram"
+                name="fullLinkTelegram"
+                placeholder="Nhập link telegram"
+              />
             </Col>
           </Row>
           <ButtonContainer>

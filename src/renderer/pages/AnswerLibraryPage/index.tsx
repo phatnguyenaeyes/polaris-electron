@@ -21,7 +21,11 @@ const initialPagination = {
 const AnswerLibraryPage: React.FC = () => {
   const navigate = useNavigate();
   const [modalImportVisible, setModalImportVisible] = useState(false);
-  const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
+  const [tableData, setTableData] = useState<{
+    data: BasicTableRow[];
+    pagination: Pagination;
+    loading: boolean;
+  }>({
     data: [],
     pagination: initialPagination,
     loading: false,
@@ -135,7 +139,7 @@ const AnswerLibraryPage: React.FC = () => {
                 total={tableData.pagination.total || 0}
                 tableHandler={tableHandler}
                 scroll={{ x: 800 }}
-                rowKey="id"
+                rowKey="_id"
                 hideAdvancedFilter={true}
               />
             </div>

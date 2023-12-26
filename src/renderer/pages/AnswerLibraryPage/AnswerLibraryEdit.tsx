@@ -45,6 +45,9 @@ interface EditTemplateFormInterface {
     content_conclusion: string;
 
     layout?: string;
+    background?: any;
+    chart_symbol?: string;
+    link_chart?: string;
   }[];
   answerGroup?: {
     _id: string;
@@ -87,7 +90,35 @@ const AnswerLibraryEditPage: React.FC = () => {
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          background: yup.array().nullable(),
         }),
+      )
+      .test(
+        'shouldRequireContentBg',
+        'Topic content background should be set.',
+        function validateTopicContentBg(currentTopicContent) {
+          const errorBgFieldIdxs = [];
+          if (this.parent?.type === 'image') {
+            if (currentTopicContent && currentTopicContent?.length > 0) {
+              for (let i = 0; i < currentTopicContent.length; i++) {
+                if (
+                  !currentTopicContent[i].background ||
+                  currentTopicContent[i].background?.length === 0
+                ) {
+                  errorBgFieldIdxs.push(i);
+                }
+              }
+              if (errorBgFieldIdxs.length > 0) {
+                return this.createError({
+                  path: `${this.path}`,
+                  message: 'Please choose background',
+                });
+              }
+            }
+          }
+
+          return true;
+        },
       )
       .min(1, 'Tối thiểu 1')
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
@@ -136,7 +167,6 @@ const AnswerLibraryEditPage: React.FC = () => {
         const detailResponse = await topicService.getBySlug(_slug);
         const {
           _id,
-          slug,
           link_chart,
           name,
           contentTopics: contentTopicsRes,
@@ -152,6 +182,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             video_conclusion, // video path
             content_conclusion,
             layout,
+            background,
             vBee_audio_body,
             vBee_audio_conclusion,
             vBee_audio_opening,
@@ -187,6 +218,16 @@ const AnswerLibraryEditPage: React.FC = () => {
                   name: video_conclusion[0],
                   originPath: `${video_conclusion[0]}`,
                   videoPath: `${S3_DOMAIN_URL}/${slug}/${video_conclusion[0]}`,
+                },
+              ],
+            }),
+            ...(background?.length > 0 && {
+              background: [
+                {
+                  uid: '1',
+                  name: background[0],
+                  originPath: `${background[0]}`,
+                  url: `${S3_DOMAIN_URL}/${slug}/${background[0]}`,
                 },
               ],
             }),
@@ -237,6 +278,8 @@ const AnswerLibraryEditPage: React.FC = () => {
           answerGroup,
         };
 
+        console.log('mappingDetail:', mappingDetail);
+
         type FormKey = keyof typeof mappingDetail;
         Object.keys(mappingDetail).map((key) => {
           const fieldKey: FormKey = `${key}` as FormKey;
@@ -283,7 +326,9 @@ const AnswerLibraryEditPage: React.FC = () => {
       if (topicId) {
         await topicService.update(topicId, {
           name: topicName,
-          link_chart: link_chart,
+          ...(link_chart && {
+            link_chart: link_chart,
+          }),
         });
         // Delete content topic ids
         if (deletedContentTopic.length > 0) {
@@ -312,9 +357,11 @@ const AnswerLibraryEditPage: React.FC = () => {
                 video_conclusion,
                 content_conclusion,
                 layout,
+                background,
               } = contentTopic[index];
-              console.log('video_opening:', video_opening);
-
+              if (link_chart) {
+                contentTopicFormData.append('link_chart', link_chart);
+              }
               contentTopicFormData.append('topic_id', topicId);
               if (video_opening?.[0].originFileObj) {
                 contentTopicFormData.append(
@@ -343,6 +390,12 @@ const AnswerLibraryEditPage: React.FC = () => {
                 content_conclusion,
               );
               contentTopicFormData.append('layout', layout as string);
+              if (background?.[0].originFileObj) {
+                contentTopicFormData.append(
+                  'background',
+                  background[0].originFileObj,
+                );
+              }
               try {
                 if (_id) {
                   await topicService.updateContentTopic(
@@ -399,19 +452,19 @@ const AnswerLibraryEditPage: React.FC = () => {
               (keywords || []).map((kw: string) => {
                 groupFormData.append('keywords[]', kw);
               });
-              answerVideo.forEach(async (av, index: number) => {
+              answerVideo.forEach(async (av, idx: number) => {
                 if (av.video?.[0].originFileObj) {
                   groupFormData.append(
-                    `answer_video_${index + 1}`,
+                    `answer_video_${idx + 1}`,
                     av.video[0].originFileObj,
                   );
                 }
                 groupFormData.append(
-                  `answer_layout_${index + 1}`,
+                  `answer_layout_${idx + 1}`,
                   av.videoLayout,
                 );
                 groupFormData.append(
-                  `answer_content_${index + 1}`,
+                  `answer_content_${idx + 1}`,
                   av.answerContent,
                 );
               });
@@ -469,8 +522,8 @@ const AnswerLibraryEditPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('POLARIS.EDIT_ANSWER')}</PageTitle>
-      <BaseFormTitle>{t('POLARIS.EDIT_ANSWER')}</BaseFormTitle>
+      <PageTitle>{`${t('POLARIS.EDIT_ANSWER')}`}</PageTitle>
+      <BaseFormTitle>{`${t('POLARIS.EDIT_ANSWER')}`}</BaseFormTitle>
       <EditTemplate
         saveButtonProps={{ loading: loading || loadingUploadArray }}
       >
@@ -479,7 +532,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             onSubmit={editFormMethods.handleSubmit(onEditSubmitForm)}
           >
             <BaseTabs>
-              <BaseTabs.TabPane tab={t('POLARIS.INFORMATION')} key="1">
+              <BaseTabs.TabPane tab={`${t('POLARIS.INFORMATION')}`} key="1">
                 <BaseRow gutter={24}>
                   <BaseCol xs={24} lg={12}>
                     <TextField
@@ -493,7 +546,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                     <SelectField
                       required
                       label={t('POLARIS.CHART')}
-                      placeholder={t('POLARIS.SELECT_CHART_PLACEHOLDER')}
+                      placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
                       name="link_chart"
                       options={[
                         { label: 'DXY', value: 'DXY' },
@@ -520,7 +573,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                   />
                 </div>
               </BaseTabs.TabPane>
-              <BaseTabs.TabPane tab={t('POLARIS.Q&A')} key="2">
+              <BaseTabs.TabPane tab={`${t('POLARIS.Q&A')}`} key="2">
                 <QuestionAndAnswerField
                   fieldName="answerGroup"
                   onDelete={(groupId) => {

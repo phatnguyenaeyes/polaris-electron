@@ -15,7 +15,7 @@ export const StyledTabs = styled(AntdTabs)`
     }
 
     .ant-tabs-ink-bar {
-      background: ${() => `url(${BASE_NAME_PUBLIC}/light-underline.png)`};
+      background: ${() => `url(/light-underline.png)`};
       background-color: transparent;
       background-repeat: no-repeat, repeat;
     }

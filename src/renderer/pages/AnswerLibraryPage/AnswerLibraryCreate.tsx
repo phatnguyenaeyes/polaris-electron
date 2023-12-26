@@ -24,6 +24,8 @@ interface CreateTemplateFormInterface {
   videoContentLayout: string;
   videoEndLayout: string;
   libraryContent: any[];
+  type: string;
+  chart_symbol: string;
   link_chart: string;
   videoLoopOption: string;
   contentTopic?: {
@@ -38,6 +40,7 @@ interface CreateTemplateFormInterface {
     content_conclusion: string;
 
     layout: string;
+    background?: any;
   }[];
   answerGroup?: {
     _id: string;
@@ -76,7 +79,46 @@ const AnswerLibraryCreatePage: React.FC = () => {
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          background: yup.array().nullable(),
         }),
+      )
+      .test(
+        'shouldRequireContentBg',
+        'Topic content background should be set.',
+        function validateTopicContentBg(currentTopicContent) {
+          const errorBgFieldIdxs = [];
+          if (this.parent?.type === 'image') {
+            if (currentTopicContent && currentTopicContent?.length > 0) {
+              for (let i = 0; i < currentTopicContent.length; i++) {
+                if (
+                  !currentTopicContent[i].background ||
+                  currentTopicContent[i].background?.length === 0
+                ) {
+                  errorBgFieldIdxs.push(i);
+                }
+              }
+              if (errorBgFieldIdxs.length > 0) {
+                return this.createError({
+                  path: `${this.path}`,
+                  message: 'Please choose background',
+                });
+              }
+
+              // errorBgFieldIdxs.forEach((eBgIdx) => {
+              //   const convertIdx = `${eBgIdx}`;
+              //   const fieldPath = `${this.path}[0].background`;
+              //   console.log('fieldPath:', fieldPath);
+              //   return this.createError({
+              //     path: fieldPath,
+              //     message: 'Please choose background',
+              //   });
+              // });
+              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
+            }
+          }
+
+          return true;
+        },
       )
       .min(1, 'Tối thiểu 1')
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
@@ -132,7 +174,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
           answerVideo: [
             {
               video: '',
-              answerContent: '123',
+              answerContent: '',
               videoLayout: 'layout-2',
             },
           ],
@@ -146,11 +188,13 @@ const AnswerLibraryCreatePage: React.FC = () => {
       console.log('create form values:', values);
       setLoading(true);
       const { topicName, link_chart, contentTopic, answerGroup } = values;
-
-      const createTopicRes = await topicService.create({
+      const createData = {
         name: topicName,
-        link_chart: link_chart,
-      });
+        ...(link_chart && {
+          link_chart: link_chart,
+        }),
+      };
+      const createTopicRes = await topicService.create(createData);
       (async function loop() {
         setLoadingUploadArray(true);
 
@@ -169,6 +213,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
               video_conclusion,
               content_conclusion,
               layout,
+              background,
             } = contentTopic[index];
             contentTopicFormData.append('topic_id', createTopicRes?._id);
             if (video_opening?.length > 0) {
@@ -196,6 +241,12 @@ const AnswerLibraryCreatePage: React.FC = () => {
               content_conclusion,
             );
             contentTopicFormData.append('layout', layout as string);
+            if (background && background?.length > 0) {
+              contentTopicFormData.append(
+                'background',
+                background[0]?.originFileObj,
+              );
+            }
             try {
               await topicService.createContentTopic(contentTopicFormData);
               contentSuccess.push(
@@ -246,19 +297,16 @@ const AnswerLibraryCreatePage: React.FC = () => {
             (keywords || []).map((kw: string) => {
               groupFormData.append('keywords[]', kw);
             });
-            answerVideo.forEach(async (av, index: number) => {
+            answerVideo.forEach(async (av, idx: number) => {
               if (av.video?.length > 0) {
                 groupFormData.append(
-                  `answer_video_${index + 1}`,
+                  `answer_video_${idx + 1}`,
                   av.video[0].originFileObj,
                 );
               }
+              groupFormData.append(`answer_layout_${idx + 1}`, av.videoLayout);
               groupFormData.append(
-                `answer_layout_${index + 1}`,
-                av.videoLayout,
-              );
-              groupFormData.append(
-                `answer_content_${index + 1}`,
+                `answer_content_${idx + 1}`,
                 av.answerContent,
               );
             });
@@ -312,8 +360,8 @@ const AnswerLibraryCreatePage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('POLARIS.ADD_TOPIC')}</PageTitle>
-      <BaseFormTitle>{t('POLARIS.ADD_TOPIC')}</BaseFormTitle>
+      <PageTitle>{`${t('POLARIS.ADD_TOPIC')}`}</PageTitle>
+      <BaseFormTitle>{`${t('POLARIS.ADD_TOPIC')}`}</BaseFormTitle>
       <CreateTemplate
         saveButtonProps={{ loading: loading || loadingUploadArray }}
       >
@@ -322,7 +370,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
             onSubmit={createFormMethods.handleSubmit(onCreateSubmitForm)}
           >
             <BaseTabs>
-              <BaseTabs.TabPane tab={t('POLARIS.INFORMATION')} key="1">
+              <BaseTabs.TabPane tab={`${t('POLARIS.INFORMATION')}`} key="1">
                 <BaseRow gutter={24}>
                   <BaseCol xs={24} lg={12}>
                     <TextField
@@ -336,7 +384,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
                     <SelectField
                       required
                       label={t('POLARIS.CHART')}
-                      placeholder={t('POLARIS.SELECT_CHART_PLACEHOLDER')}
+                      placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
                       name="link_chart"
                       options={[
                         { label: 'DXY', value: 'DXY' },
@@ -355,7 +403,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
                   <LibraryContentField fieldName="contentTopic" />
                 </div>
               </BaseTabs.TabPane>
-              <BaseTabs.TabPane tab={t('POLARIS.Q&A')} key="2">
+              <BaseTabs.TabPane tab={`${t('POLARIS.Q&A')}`} key="2">
                 <QuestionAndAnswerField fieldName="answerGroup" />
               </BaseTabs.TabPane>
             </BaseTabs>

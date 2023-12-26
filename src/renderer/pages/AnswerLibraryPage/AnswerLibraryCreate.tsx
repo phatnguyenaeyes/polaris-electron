@@ -13,11 +13,10 @@ import * as yup from 'yup';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import SelectField from '@app/components/formControl/SelectField';
-import { useTranslation } from 'react-i18next';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
 import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
+import SelectField from '@app/components/formControl/SelectField';
+import { useTranslation } from 'react-i18next';
 
 interface CreateTemplateFormInterface {
   topicName: string;
@@ -25,9 +24,8 @@ interface CreateTemplateFormInterface {
   videoContentLayout: string;
   videoEndLayout: string;
   libraryContent: any[];
-  videoLoopOption: string;
-  type: string;
   link_chart: string;
+  videoLoopOption: string;
   contentTopic?: {
     _id: string;
     video_opening: any;
@@ -40,8 +38,6 @@ interface CreateTemplateFormInterface {
     content_conclusion: string;
 
     layout: string;
-    background?: string;
-    chart_symbol?: string;
   }[];
   answerGroup?: {
     _id: string;
@@ -64,12 +60,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
 
   const createFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    link_chart: yup.string().when('type', {
-      is: (layout: string) => layout === 'chart',
-      then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-      otherwise: yup.string().notRequired(),
-    }),
+    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
       .of(
@@ -85,53 +76,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          chart_symbol: yup.string().when('layout', {
-            is: (layout: string) => layout === 'layout-1',
-            then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-            otherwise: yup.string().notRequired(),
-          }),
-          background: yup.array().nullable(),
         }),
-      )
-      .test(
-        'shouldRequireContentBg',
-        'Topic content background should be set.',
-        function validateTopicContentBg(currentTopicContent) {
-          console.log('currentTopicContent:', currentTopicContent);
-          const errorBgFieldIdxs = [];
-          console.log('this:', this);
-          if (this.parent?.type === 'image') {
-            if (currentTopicContent && currentTopicContent?.length > 0) {
-              for (let i = 0; i < currentTopicContent.length; i++) {
-                if (
-                  !currentTopicContent[i].background ||
-                  currentTopicContent[i].background?.length === 0
-                ) {
-                  errorBgFieldIdxs.push(i);
-                }
-              }
-              if (errorBgFieldIdxs.length > 0) {
-                return this.createError({
-                  path: `${this.path}`,
-                  message: 'Please choose background',
-                });
-              }
-
-              // errorBgFieldIdxs.forEach((eBgIdx) => {
-              //   const convertIdx = `${eBgIdx}`;
-              //   const fieldPath = `${this.path}[0].background`;
-              //   console.log('fieldPath:', fieldPath);
-              //   return this.createError({
-              //     path: fieldPath,
-              //     message: 'Please choose background',
-              //   });
-              // });
-              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
-            }
-          }
-
-          return true;
-        },
       )
       .min(1, 'Tối thiểu 1')
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
@@ -170,7 +115,6 @@ const AnswerLibraryCreatePage: React.FC = () => {
   const createFormMethods = useForm<CreateTemplateFormInterface>({
     resolver: yupResolver(createFormSchema),
     defaultValues: {
-      type: 'chart',
       videoLayout: 'layout1',
       videoContentLayout: 'layout1',
       videoEndLayout: 'layout2',
@@ -179,7 +123,6 @@ const AnswerLibraryCreatePage: React.FC = () => {
           video_opening: '',
           content_opening: '',
           layout: 'layout-1',
-          background: '',
         },
       ],
       answerGroup: [
@@ -210,9 +153,12 @@ const AnswerLibraryCreatePage: React.FC = () => {
       });
       (async function loop() {
         setLoadingUploadArray(true);
+
         // Content topic
         if (contentTopic && contentTopic?.length > 0) {
           const contentTopicLenght = contentTopic?.length || 0;
+          const contentErr = [];
+          const contentSuccess = [];
           for (let index = 0; index < contentTopicLenght; index++) {
             const contentTopicFormData = new FormData();
             const {
@@ -223,8 +169,6 @@ const AnswerLibraryCreatePage: React.FC = () => {
               video_conclusion,
               content_conclusion,
               layout,
-              background,
-              chart_symbol,
             } = contentTopic[index];
             contentTopicFormData.append('topic_id', createTopicRes?._id);
             if (video_opening?.length > 0) {
@@ -252,20 +196,46 @@ const AnswerLibraryCreatePage: React.FC = () => {
               content_conclusion,
             );
             contentTopicFormData.append('layout', layout as string);
-            if (background) {
-              contentTopicFormData.append('background', layout as string);
+            try {
+              await topicService.createContentTopic(contentTopicFormData);
+              contentSuccess.push(
+                `Success to create topic content ${index + 1}!`,
+              );
+            } catch (error) {
+              contentErr.push(`Fail to create topic content ${index + 1}!`);
+            } finally {
+              // FINALLY NOTI
+              if (index === contentTopic.length - 1) {
+                contentSuccess.length > 0 &&
+                  notificationController.success({
+                    message: 'SUCCESS',
+                    description: (
+                      <div className="d-flex flex-column">
+                        {contentSuccess.map((success, idx) => (
+                          <p key={idx}>{success}</p>
+                        ))}
+                      </div>
+                    ),
+                  });
+                contentErr.length > 0 &&
+                  notificationController.error({
+                    message: 'ERROR',
+                    description: (
+                      <div className="d-flex flex-column">
+                        {contentErr.map((err, idx) => (
+                          <p key={idx}>{err}</p>
+                        ))}
+                      </div>
+                    ),
+                  });
+              }
             }
-            if (chart_symbol) {
-              contentTopicFormData.append('chart_symbol', layout as string);
-            }
-            await topicService.createContentTopic(contentTopicFormData);
           }
-          notificationController.success({
-            message: 'Update successfully',
-          });
         }
         // Content group anwser
         if (answerGroup && answerGroup.length > 0) {
+          const answerErr = [];
+          const answerSuccess = [];
           for (let index = 0; index < answerGroup.length; index++) {
             const groupFormData = new FormData();
             const { priority, content, keywords, answerVideo } =
@@ -292,28 +262,53 @@ const AnswerLibraryCreatePage: React.FC = () => {
                 av.answerContent,
               );
             });
-            await topicGroupService.create(groupFormData);
+            try {
+              await topicGroupService.create(groupFormData);
+              answerSuccess.push(
+                `Success to create answer group ${index + 1}!!`,
+              );
+            } catch (error) {
+              answerErr.push(`Fail to create answer group ${index + 1}!!`);
+            } finally {
+              // FINALLY NOTI
+              if (index === answerGroup.length - 1) {
+                answerSuccess.length > 0 &&
+                  notificationController.success({
+                    message: 'SUCCESS',
+                    description: (
+                      <div className="d-flex flex-column">
+                        {answerSuccess.map((success, idx) => (
+                          <p key={idx}>{success}</p>
+                        ))}
+                      </div>
+                    ),
+                  });
+                answerErr.length > 0 &&
+                  notificationController.error({
+                    message: 'ERROR',
+                    description: (
+                      <div className="d-flex flex-column">
+                        {answerErr.map((err, idx) => (
+                          <p key={idx}>{err}</p>
+                        ))}
+                      </div>
+                    ),
+                  });
+              }
+            }
           }
-          notificationController.success({
-            message: 'Update successfully',
-          });
+
+          navigate('/answer-library');
           setLoadingUploadArray(false);
         }
       })();
 
       setLoading(false);
-      notificationController.success({ message: 'Tạo chủ đề thành công' });
-      navigate('/answer-library');
     } catch (error) {
     } finally {
       setLoading(false);
     }
   };
-
-  console.log(
-    'createFormMethods.formState.errors:',
-    createFormMethods.formState.errors,
-  );
 
   return (
     <>
@@ -339,11 +334,11 @@ const AnswerLibraryCreatePage: React.FC = () => {
                   </BaseCol>
                   <BaseCol xs={24} lg={12}>
                     <SelectField
+                      required
                       label={t('POLARIS.CHART')}
                       placeholder={t('POLARIS.SELECT_CHART_PLACEHOLDER')}
                       name="link_chart"
                       options={[
-                        { label: 'Select chart symbol', value: '' },
                         { label: 'DXY', value: 'DXY' },
                         { label: 'XAUUSD', value: 'XAUUSD' },
                         { label: 'EURUSD', value: 'EURUSD' },
@@ -356,21 +351,6 @@ const AnswerLibraryCreatePage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
-                <RadioGroupField
-                  name={`type`}
-                  label="Select topic type"
-                  radioPerRow={2}
-                  options={[
-                    {
-                      label: 'Chart',
-                      value: 'chart',
-                    },
-                    {
-                      label: 'Image',
-                      value: 'image',
-                    },
-                  ]}
-                />
                 <div>
                   <LibraryContentField fieldName="contentTopic" />
                 </div>

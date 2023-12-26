@@ -1,7 +1,7 @@
 module.exports = {
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
   extends: [
-    'erb',
+    // 'erb',
     'plugin:react/recommended', // Uses the recommended rules from @eslint-plugin-react
     'plugin:@typescript-eslint/recommended', // Uses the recommended rules from @typescript-eslint/eslint-plugin
     'prettier', // Uses eslint-config-prettier to disable ESLint rules from @typescript-eslint/eslint-plugin that would conflict with prettier
@@ -23,7 +23,11 @@ module.exports = {
     'react/function-component-definition': 'off',
     'no-useless-concat': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
-    'intreact/jsx-props-no-spreading': 'off',
+    'react/jsx-props-no-spreading': 'off',
+    'react/jsx-no-useless-fragment': 'off',
+    camelcase: 'off',
+    'no-empty': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
   parserOptions: {
     ecmaVersion: 2021,

@@ -12,12 +12,6 @@ export interface SidebarNavigationItem {
 
 export const sidebarNavigation: SidebarNavigationItem[] = [
   // {
-  //   title: 'common.nft-dashboard',
-  //   key: 'nft-dashboard',
-  //   url: '/',
-  //   icon: <BlockOutlined />,
-  // },
-  // {
   //   title: 'common.authPages',
   //   key: 'auth',
   //   icon: <UserOutlined />,
@@ -94,12 +88,6 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     url: '/answer-library',
     icon: <CustomIcon iconName="disk" />,
   },
-  // {
-  //   title: 'Interactor',
-  //   key: 'interactor',
-  //   url: '/interactor',
-  //   icon: <BlockOutlined />,
-  // },
   {
     title: 'POLARIS.CONFIGURATION',
     key: 'liveConfig',
@@ -118,38 +106,4 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     url: '/scenario',
     icon: <BlockOutlined />,
   },
-  // {
-  //   title: 'common.pages',
-  //   key: 'pages',
-  //   icon: <LayoutOutlined />,
-  //   children: [
-  //     {
-  //       title: 'common.profilePage',
-  //       key: 'profile',
-  //       url: '/profile',
-  //     },
-  //     {
-  //       title: 'common.serverError',
-  //       key: 'serverError',
-  //       url: '/server-error',
-  //     },
-  //     {
-  //       title: 'common.clientError',
-  //       key: '404Error',
-  //       url: '/404',
-  //     },
-  //   ],
-  // },
-  // {
-  //   title: 'common.ui',
-  //   key: 'ui',
-  //   icon: <BlockOutlined />,
-  //   children: [
-  //     {
-  //       title: 'Base Component',
-  //       key: 'base-component',
-  //       url: '/ui-components/base-component',
-  //     },
-  //   ],
-  // },
 ];

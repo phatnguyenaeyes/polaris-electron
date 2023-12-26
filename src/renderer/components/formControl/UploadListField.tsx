@@ -1,11 +1,15 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
 import { Image, Modal, Upload, Button, message } from 'antd';
 import classNames from 'classnames';
 import { useMemo, useState } from 'react';
-import { UploadOutlined } from '@ant-design/icons';
 import { TYPE_DOC_UPLOAD } from '@app/constants/upload';
 import { parseListImage } from '@app/utils/utils';
-import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/lib/upload';
+import {
+  RcFile,
+  UploadChangeParam,
+  UploadFile,
+  UploadProps,
+} from 'antd/lib/upload';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 type BaseUploadProps = Omit<UploadProps, 'onChange'>;
@@ -39,7 +43,8 @@ const VIDEO_ONLY_REGEX = /(\.mp4|\.mov)$/i;
 const DOCS_ONLY_REGEX = /(\.pdf)$/i;
 const WORDS_DOCS_ONLY_REGEX =
   /\.(docx|doc)|(application\/vnd\.openxmlformats-officedocument\.wordprocessingml\.document)$/i;
-const WORKBOOK_ONLY_REGEX = /^application\/(csv|pdf|msword|(vnd\.(ms-|openxmlformats-).*))$/i;
+const WORKBOOK_ONLY_REGEX =
+  /^application\/(csv|pdf|msword|(vnd\.(ms-|openxmlformats-).*))$/i;
 const IMAGE_AND_DOCS_ONLY_REGEX = /(\.jpg|\.jpeg|\.png|\.gif|\.bmp|\.pdf)$/i;
 
 function checkAcceptImageType(
@@ -51,19 +56,25 @@ function checkAcceptImageType(
 ) {
   if (excelOnly) {
     return WORKBOOK_ONLY_REGEX.test(`${fileType}`);
-  } else if (videoOnly) {
-    return VIDEO_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
-  } else if (docsOnly) {
-    return WORDS_DOCS_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
-  } else {
-    if (allowDocument) {
-      return IMAGE_AND_DOCS_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
-    }
-    return IMAGE_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
   }
+  if (videoOnly) {
+    return VIDEO_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
+  }
+  if (docsOnly) {
+    return WORDS_DOCS_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
+  }
+  if (allowDocument) {
+    return IMAGE_AND_DOCS_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
+  }
+  return IMAGE_ONLY_REGEX.test(`.${fileType.split('/').pop()}`);
 }
 
-const beforeUploadProps = (allowDocument?: boolean, videoOnly?: boolean, excelOnly?: boolean, docsOnly?: boolean) => {
+const beforeUploadProps = (
+  allowDocument?: boolean,
+  videoOnly?: boolean,
+  excelOnly?: boolean,
+  docsOnly?: boolean,
+) => {
   return {
     beforeUpload: (file: RcFile) => {
       const isLtSize = file.size / MAX_50M < 1;
@@ -90,7 +101,11 @@ const beforeUploadProps = (allowDocument?: boolean, videoOnly?: boolean, excelOn
 
 const draggerProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  customRequest: ({ onSuccess }: { onSuccess: (body: any, xhr?: XMLHttpRequest) => void }) => {
+  customRequest: ({
+    onSuccess,
+  }: {
+    onSuccess: (body: any, xhr?: XMLHttpRequest) => void;
+  }) => {
     setTimeout(() => {
       onSuccess('ok');
     }, 0);
@@ -122,13 +137,69 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
   } = props;
   const hasError = !!fieldError;
 
-  const onChangeUpload = async ({ fileList: newFileList }: UploadChangeParam) => {
-    const originalImages = newFileList.filter((img: UploadFile) => !img?.originFileObj);
-    const blobImages = newFileList.filter((img: UploadFile) => img?.originFileObj);
+  const getVideoThumbnail = (file: File, videoTimeInSeconds = 1) => {
+    return new Promise((resolve, reject) => {
+      if (file.type.match('video')) {
+        importFileAndPreview(file).then((urlOfFIle) => {
+          const video = document.createElement('video');
+          const timeupdate = function () {
+            if (snapImage()) {
+              video.removeEventListener('timeupdate', timeupdate);
+              video.pause();
+            }
+          };
+          video.addEventListener('loadeddata', function () {
+            if (snapImage()) {
+              video.removeEventListener('timeupdate', timeupdate);
+            }
+          });
+          const snapImage = function () {
+            const canvas = document.createElement('canvas') as any;
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas
+              .getContext('2d')
+              .drawImage(video, 0, 0, canvas.width, canvas.height);
+            const image = canvas.toDataURL();
+            const success = image.length > 100000;
+            if (success) {
+              URL.revokeObjectURL(urlOfFIle as string);
+              resolve(image);
+            }
+            return success;
+          };
+          video.addEventListener('timeupdate', timeupdate);
+          video.preload = 'metadata';
+          video.src = urlOfFIle as string;
+          // Load video in Safari / IE11
+          video.muted = true;
+          video.playsInline = true;
+          video.currentTime = videoTimeInSeconds;
+          video.play();
+        });
+      } else {
+        reject('Tệp không hợp lệ');
+      }
+    });
+  };
+
+  const onChangeUpload = async ({
+    fileList: newFileList,
+  }: UploadChangeParam) => {
+    const originalImages = newFileList.filter(
+      (img: UploadFile) => !img?.originFileObj,
+    );
+    const blobImages = newFileList.filter(
+      (img: UploadFile) => img?.originFileObj,
+    );
     try {
       const promiseList = blobImages.map((el) => {
         return new Promise((resolve) => {
-          if (el.type && (el.type.match('application/pdf') || TYPE_DOC_UPLOAD.includes(el.type))) {
+          if (
+            el.type &&
+            (el.type.match('application/pdf') ||
+              TYPE_DOC_UPLOAD.includes(el.type))
+          ) {
             resolve({
               ...el,
               thumbUrl: '/pdf_icon.png',
@@ -156,7 +227,8 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
         });
       });
       const newImageListWithThumb = await Promise.all(promiseList);
-      onChange && onChange([...originalImages, ...newImageListWithThumb] as UploadFile[]);
+      onChange &&
+        onChange([...originalImages, ...newImageListWithThumb] as UploadFile[]);
     } catch (error) {
       message.error('Có lỗi! Vui lòng thử lại sau');
     }
@@ -169,7 +241,9 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
     type?: string;
   } | null>();
 
-  const onPreview = async (file: UploadFile & { type?: string; videoPath?: string }) => {
+  const onPreview = async (
+    file: UploadFile & { type?: string; videoPath?: string },
+  ) => {
     let src = file?.url;
     const thumbUrl = file?.thumbUrl;
     const videoPath = file?.videoPath;
@@ -192,7 +266,7 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
     if (videoPath) {
       setVideo({
         src: videoPath,
-        type: 'video/' + videoPath.split('.').pop(),
+        type: `video/${videoPath.split('.').pop()}`,
         thumbUrl: thumbUrl || videoPath,
       });
     }
@@ -201,7 +275,10 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
     }
   };
 
-  const generateVideoThumbnails = async (videoFile: any, videoTimeInSeconds = 0) => {
+  const generateVideoThumbnails = async (
+    videoFile: any,
+    videoTimeInSeconds = 0,
+  ) => {
     return new Promise(async (resolve, reject) => {
       if (!videoFile.type?.includes('video')) reject('Tệp video không hợp lệ');
       try {
@@ -227,50 +304,6 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
     });
   };
 
-  const getVideoThumbnail = (file: File, videoTimeInSeconds = 1) => {
-    return new Promise((resolve, reject) => {
-      if (file.type.match('video')) {
-        importFileAndPreview(file).then((urlOfFIle) => {
-          const video = document.createElement('video');
-          const timeupdate = function () {
-            if (snapImage()) {
-              video.removeEventListener('timeupdate', timeupdate);
-              video.pause();
-            }
-          };
-          video.addEventListener('loadeddata', function () {
-            if (snapImage()) {
-              video.removeEventListener('timeupdate', timeupdate);
-            }
-          });
-          const snapImage = function () {
-            const canvas = document.createElement('canvas') as any;
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-            const image = canvas.toDataURL();
-            const success = image.length > 100000;
-            if (success) {
-              URL.revokeObjectURL(urlOfFIle as string);
-              resolve(image);
-            }
-            return success;
-          };
-          video.addEventListener('timeupdate', timeupdate);
-          video.preload = 'metadata';
-          video.src = urlOfFIle as string;
-          // Load video in Safari / IE11
-          video.muted = true;
-          video.playsInline = true;
-          video.currentTime = videoTimeInSeconds;
-          video.play();
-        });
-      } else {
-        reject('Tệp không hợp lệ');
-      }
-    });
-  };
-
   const fileListProps = useMemo(() => {
     return parseListImage(fileList);
   }, [fileList]);
@@ -281,10 +314,9 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
       if (notAllowDelete) {
         message.warn('Không hỗ trợ xoá');
         return false;
-      } else {
-        if (typeof onDeleteFile === 'function') {
-          onDeleteFile(file);
-        }
+      }
+      if (typeof onDeleteFile === 'function') {
+        onDeleteFile(file);
       }
     }
     return true;
@@ -314,7 +346,10 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
       })}
     >
       {label && (
-        <label className="inline-block mb-2 text-[13px]" style={{ display: 'block' }}>
+        <label
+          className="inline-block mb-2 text-[13px]"
+          style={{ display: 'block' }}
+        >
           {label}
           {required && <span className="text-required">*</span>}
         </label>
@@ -356,9 +391,11 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
           </>
         )}
       </Upload>
-      {suffixHelpText && <div className="form-item_help-text">{suffixHelpText}</div>}
+      {suffixHelpText && (
+        <div className="form-item_help-text">{suffixHelpText}</div>
+      )}
 
-      {Boolean(visible) && !Boolean(video) && (
+      {Boolean(visible) && !video && (
         <Image
           style={{ display: 'none' }}
           src={visible as string}
@@ -380,7 +417,13 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
           bodyStyle={{ padding: 0 }}
           closable={false}
         >
-          <video width="100%" height="100%" poster={video?.thumbUrl} autoPlay={true} controls>
+          <video
+            width="100%"
+            height="100%"
+            poster={video?.thumbUrl}
+            autoPlay
+            controls
+          >
             <source src={video?.src} type={video?.type} />
           </video>
         </Modal>
@@ -394,7 +437,9 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
   );
 };
 
-export default function UploadListField(props: UploadListFieldProps): JSX.Element {
+export default function UploadListField(
+  props: UploadListFieldProps,
+): JSX.Element {
   const {
     control,
     formState: { errors },
@@ -410,7 +455,12 @@ export default function UploadListField(props: UploadListFieldProps): JSX.Elemen
       name={props.name}
       control={control}
       render={({ field: { onChange, value }, fieldState }) => (
-        <UploadListBase {...internalProps} onChange={onChange} fileList={value} fieldError={fieldState.error} />
+        <UploadListBase
+          {...internalProps}
+          onChange={onChange}
+          fileList={value}
+          fieldError={fieldState.error}
+        />
       )}
     />
   );

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
+import { BaseDivider } from '@app/components/common/BaseDivider/BaseDivider';
 import * as S from './SiderMenu.styles';
 import { sidebarNavigation, SidebarNavigationItem } from '../sidebarNavigation';
-import { BaseDivider } from '@app/components/common/BaseDivider/BaseDivider';
 
 interface SiderContentProps {
   setCollapsed: (isCollapsed: boolean) => void;
@@ -11,7 +11,11 @@ interface SiderContentProps {
 
 const sidebarNavFlat = sidebarNavigation.reduce(
   (result: SidebarNavigationItem[], current) =>
-    result.concat(current.children && current.children.length > 0 ? current.children : current),
+    result.concat(
+      current.children && current.children.length > 0
+        ? current.children
+        : current,
+    ),
   [],
 );
 
@@ -24,8 +28,8 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   });
   const defaultSelectedKeys = currentMenuItem ? [currentMenuItem.key] : [];
 
-  const openedSubmenu = sidebarNavigation.find(({ children }) =>
-    children?.some(({ url }) => url === location.pathname),
+  const openedSubmenu = sidebarNavigation.find(
+    ({ children }) => children?.some(({ url }) => url === location.pathname),
   );
   const defaultOpenKeys = openedSubmenu ? [openedSubmenu.key] : [];
 

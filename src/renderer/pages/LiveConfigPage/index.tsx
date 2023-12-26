@@ -7,7 +7,8 @@ import { LiveDevSettingsInterface } from './interface';
 
 const LiveConfigPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
-  const [liveDevSettings, setLiveDevSettings] = useState<LiveDevSettingsInterface>();
+  const [liveDevSettings, setLiveDevSettings] =
+    useState<LiveDevSettingsInterface>();
 
   async function fetchLiveDevSetting() {
     try {
@@ -19,6 +20,7 @@ const LiveConfigPage: React.FC = () => {
       if (res?.data?.length > 0) {
         setLiveDevSettings(res?.data[0]);
       }
+      // eslint-disable-next-line no-empty
     } catch (error) {
     } finally {
       setLoading(false);
@@ -41,7 +43,10 @@ const LiveConfigPage: React.FC = () => {
       {loading ? null : (
         <>
           {liveDevSettings ? (
-            <LiveConfigEditForm liveDevSettings={liveDevSettings} onSuccess={onSuccess} />
+            <LiveConfigEditForm
+              liveDevSettings={liveDevSettings}
+              onSuccess={onSuccess}
+            />
           ) : (
             <LiveConfigCreateForm onCreated={onCreated} />
           )}

@@ -11,20 +11,26 @@ import { isEmpty } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { LiveDevSettingsInterface } from './interface';
 import { useTranslation } from 'react-i18next';
+import { LiveDevSettingsInterface } from './interface';
 
-const LiveConfigEditForm: React.FC<{ liveDevSettings: LiveDevSettingsInterface; onSuccess: () => void }> = ({
-  liveDevSettings,
-  onSuccess,
-}) => {
+const LiveConfigEditForm: React.FC<{
+  liveDevSettings: LiveDevSettingsInterface;
+  onSuccess: () => void;
+}> = ({ liveDevSettings, onSuccess }) => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [liveDevSettingId, setLiveDevSettingId] = useState<string>();
 
   const formSchema = yup.object().shape({
-    videoStart: yup.array().min(1, 'Vui lòng chọn ít nhất một tuỳ chọn').required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    videoEnd: yup.array().min(1, 'Vui lòng chọn ít nhất một tuỳ chọn').required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    videoStart: yup
+      .array()
+      .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    videoEnd: yup
+      .array()
+      .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
   });
 
   const formMethods = useForm<any>({
@@ -109,7 +115,7 @@ const LiveConfigEditForm: React.FC<{ liveDevSettings: LiveDevSettingsInterface; 
       <BaseFormTitle>{t('POLARIS.START_A_LIVE_STREAM_SESSION')}</BaseFormTitle>
       <EditTemplate
         saveButtonProps={{
-          loading: loading,
+          loading,
         }}
         okBtnText={t('POLARIS.START')}
       >

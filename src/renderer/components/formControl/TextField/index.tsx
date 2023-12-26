@@ -1,4 +1,7 @@
-import { BaseInput, BaseInputProps } from '@app/components/common/inputs/BaseInput/BaseInput';
+import {
+  BaseInput,
+  BaseInputProps,
+} from '@app/components/common/inputs/BaseInput/BaseInput';
 import { Space } from 'antd';
 import React, { ChangeEvent } from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';

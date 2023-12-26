@@ -1,16 +1,22 @@
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import TextField from '@app/components/formControl/TextField';
+import UploadListField from '@app/components/formControl/UploadListField';
 import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
 import { topicService } from '@app/services/topic.service';
 import { topicGroupService } from '@app/services/topicGroup.service';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
+import AnswerGroupField from './components/AnswerGroupField';
+import VideoLoopField from './components/VideoContentField';
+import VideoStartField from './components/VideoStartField';
+import VideoContentField from './components/VideoContentField';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
@@ -19,7 +25,6 @@ import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { scriptService } from '@app/services/script.service';
 import { useTranslation } from 'react-i18next';
 import SelectField from '@app/components/formControl/SelectField';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
 
 const DEFAULT_LAYOUT = 'layout-1';
 
@@ -29,9 +34,8 @@ interface EditTemplateFormInterface {
   videoContentLayout: string;
   videoEndLayout: string;
   libraryContent: any[];
-  videoLoopOption: string;
-  type: string;
   link_chart: string;
+  videoLoopOption: string;
   contentTopic?: {
     _id: string;
     video_opening: any;
@@ -44,8 +48,6 @@ interface EditTemplateFormInterface {
     content_conclusion: string;
 
     layout: string;
-    background?: string;
-    chart_symbol?: string;
   }[];
   answerGroup?: {
     _id: string;
@@ -73,12 +75,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    link_chart: yup.string().when('type', {
-      is: (layout: string) => layout === 'chart',
-      then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-      otherwise: yup.string().notRequired(),
-    }),
+    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
       .of(
@@ -89,7 +86,9 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
             .required(t('POLARIS.REQUIRED_ERROR_MSG'))
             .nullable(),
-          content_opening: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          content_opening: yup
+            .string()
+            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           video_body: yup
             .array()
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
@@ -101,18 +100,10 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
             .required(t('POLARIS.REQUIRED_ERROR_MSG'))
             .nullable(),
-          content_conclusion: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          content_conclusion: yup
+            .string()
+            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          chart_symbol: yup.string().when('layout', {
-            is: (layout: string) => layout === 'layout-1',
-            then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-            otherwise: yup.string().notRequired(),
-          }),
-          background: yup.array().when('layout', {
-            is: (layout: string) => layout === 'layout-2',
-            then: yup.array().min(1, 'Tối thiểu 1').required(t('POLARIS.REQUIRED_ERROR_MSG')).nullable(),
-            otherwise: yup.array().nullable(),
-          }),
         }),
       )
       .min(1, 'Tối thiểu 1')
@@ -124,7 +115,11 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
           _id: yup.string().nullable().notRequired(),
           priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
           content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          keywords: yup.array().min(1, 'Tối thiểu 1').required(t('POLARIS.REQUIRED_ERROR_MSG')).nullable(),
+          keywords: yup
+            .array()
+            .min(1, 'Tối thiểu 1')
+            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+            .nullable(),
           answerVideo: yup
             .array()
             .of(
@@ -134,8 +129,12 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                   .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'))
                   .nullable(),
-                videoLayout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-                answerContent: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+                videoLayout: yup
+                  .string()
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+                answerContent: yup
+                  .string()
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
               }),
             )
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
@@ -148,18 +147,26 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
   const editFormMethods = useForm<EditTemplateFormInterface>({
     resolver: yupResolver(editFormSchema),
-    defaultValues: {
-      type: 'chart',
-    },
+    defaultValues: {},
   });
 
   useEffect(() => {
     async function fetchScriptDetail(_slug: string, _scriptId: string) {
       try {
         setLoading(true);
-        const detailResponse = await scriptService.scripFromTopictDetail(_scriptId, _slug);
+        const detailResponse = await scriptService.scripFromTopictDetail(
+          _scriptId,
+          _slug,
+        );
         console.log('detailResponse:', detailResponse);
-        const { _id, slug, link_chart, name, contentTopics: contentTopicsRes, groups: groupsRes } = detailResponse;
+        const {
+          _id,
+          slug,
+          link_chart,
+          name,
+          contentTopics: contentTopicsRes,
+          groups: groupsRes,
+        } = detailResponse;
         setTopicId(_id);
         const contentTopic = (contentTopicsRes || []).map((ct: any) => {
           const {
@@ -170,6 +177,9 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
             video_conclusion, // video path
             content_conclusion,
             layout,
+            vBee_audio_body,
+            vBee_audio_conclusion,
+            vBee_audio_opening,
           } = ct;
           console.log('video_opening:', video_opening);
 
@@ -209,6 +219,9 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
             }),
             content_conclusion,
             layout,
+            vBee_audio_body,
+            vBee_audio_conclusion,
+            vBee_audio_opening,
           };
         });
         const answerGroup = (groupsRes || []).map((group: any) => {
@@ -248,6 +261,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
         const mappingDetail = {
           topicName: name,
+          link_chart,
           contentTopic,
           answerGroup,
         };
@@ -272,10 +286,11 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
     try {
       console.log('create form values:', values);
       setLoading(true);
-      const { topicName, contentTopic, answerGroup } = values;
+      const { topicName, link_chart, contentTopic, answerGroup } = values;
 
       const createTopicRes = await topicService.create({
         name: topicName,
+        link_chart: link_chart,
       });
       // Content topic
       const promiseListContentTopic = (contentTopic || []).map(async (ct) => {
@@ -288,26 +303,26 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
           video_conclusion,
           content_conclusion,
           layout,
-          background,
-          chart_symbol,
         } = ct;
+        console.log('createTopicRes:', createTopicRes);
+        console.log('createTopicRes?._id:', createTopicRes?._id);
         contentTopicFormData.append('topic_id', createTopicRes?._id);
-        contentTopicFormData.append('video_opening', video_opening[0].originFileObj);
+        contentTopicFormData.append(
+          'video_opening',
+          video_opening[0].originFileObj,
+        );
         contentTopicFormData.append('content_opening', content_opening);
 
         contentTopicFormData.append('video_body', video_body[0].originFileObj);
         contentTopicFormData.append('content_body', content_body);
 
-        contentTopicFormData.append('video_conclusion', video_conclusion[0].originFileObj);
+        contentTopicFormData.append(
+          'video_conclusion',
+          video_conclusion[0].originFileObj,
+        );
         contentTopicFormData.append('content_conclusion', content_conclusion);
 
         contentTopicFormData.append('layout', layout);
-        if (background) {
-          contentTopicFormData.append('background', layout as string);
-        }
-        if (chart_symbol) {
-          contentTopicFormData.append('chart_symbol', layout as string);
-        }
         return await topicService.createContentTopic(contentTopicFormData);
       });
 
@@ -323,7 +338,10 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
           groupFormData.append('keywords[]', kw);
         });
         answerVideo.forEach(async (av, index: number) => {
-          groupFormData.append(`answer_video_${index + 1}`, av.video[0].originFileObj);
+          groupFormData.append(
+            `answer_video_${index + 1}`,
+            av.video[0].originFileObj,
+          );
           groupFormData.append(`answer_layout_${index + 1}`, av.videoLayout);
           groupFormData.append(`answer_content_${index + 1}`, av.answerContent);
         });
@@ -347,7 +365,9 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
       <BaseFormTitle>{t('POLARIS.ADD_TOPIC')}</BaseFormTitle>
       <EditTemplate saveButtonProps={{ loading: loading }}>
         <FormProvider {...editFormMethods}>
-          <EditTemplate.Form onSubmit={editFormMethods.handleSubmit(onEditSubmitForm)}>
+          <EditTemplate.Form
+            onSubmit={editFormMethods.handleSubmit(onEditSubmitForm)}
+          >
             <BaseTabs>
               <BaseTabs.TabPane tab={t('POLARIS.INFORMATION')} key="1">
                 <BaseRow gutter={24}>
@@ -361,11 +381,11 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                   </BaseCol>
                   <BaseCol xs={24} lg={12}>
                     <SelectField
+                      required
                       label={t('POLARIS.CHART')}
                       placeholder={t('POLARIS.SELECT_CHART_PLACEHOLDER')}
                       name="link_chart"
                       options={[
-                        { label: 'Select chart symbol', value: '' },
                         { label: 'DXY', value: 'DXY' },
                         { label: 'XAUUSD', value: 'XAUUSD' },
                         { label: 'EURUSD', value: 'EURUSD' },
@@ -378,26 +398,14 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
-                <RadioGroupField
-                  name={`type`}
-                  label="Select topic type"
-                  radioPerRow={2}
-                  options={[
-                    {
-                      label: 'Chart',
-                      value: 'chart',
-                    },
-                    {
-                      label: 'Image',
-                      value: 'image',
-                    },
-                  ]}
-                />
                 <div>
                   <LibraryContentField
                     fieldName="contentTopic"
                     onDelete={(contentTopicId) => {
-                      setDeletedContentTopic((prevState) => [...prevState, contentTopicId]);
+                      setDeletedContentTopic((prevState) => [
+                        ...prevState,
+                        contentTopicId,
+                      ]);
                     }}
                   />
                 </div>

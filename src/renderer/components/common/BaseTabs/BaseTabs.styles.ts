@@ -12,10 +12,6 @@ export const StyledTabs = styled(AntdTabs)`
       justify-content: center;
       min-width: 160px;
       color: #ffffff80;
-
-      &.ant-tabs-tab-active .ant-tabs-tab-btn {
-        color: var(--text-base);
-      }
     }
 
     .ant-tabs-ink-bar {

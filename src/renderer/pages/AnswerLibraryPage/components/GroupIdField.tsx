@@ -9,7 +9,12 @@ interface Props {
   onDelete: (contentTopicId: string) => void;
 }
 
-const GroupIdField: React.FC<Props> = ({ fieldLength, fieldIndex, fieldName, onDelete }) => {
+const GroupIdField: React.FC<Props> = ({
+  fieldLength,
+  fieldIndex,
+  fieldName,
+  onDelete,
+}) => {
   const { watch, register } = useFormContext();
   const watchGroupIdField = watch(`${fieldName}`);
   return (
@@ -23,7 +28,7 @@ const GroupIdField: React.FC<Props> = ({ fieldLength, fieldIndex, fieldName, onD
             onDelete(watchGroupIdField);
           }}
         >
-          Xoá nhóm từ khoá {fieldIndex + 1}
+          Delete keyword group {fieldIndex + 1}
         </BaseButton>
       ) : null}
       <input type="hidden" {...register(`${fieldName}`)} />

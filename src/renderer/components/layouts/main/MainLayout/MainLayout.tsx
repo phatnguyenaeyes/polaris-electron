@@ -12,7 +12,6 @@ const MainLayout: React.FC = () => {
   const [siderCollapsed, setSiderCollapsed] = useState(true);
   const { isDesktop } = useResponsive();
   const location = useLocation();
-  console.log('location:', location);
 
   const toggleSider = () => setSiderCollapsed(!siderCollapsed);
 

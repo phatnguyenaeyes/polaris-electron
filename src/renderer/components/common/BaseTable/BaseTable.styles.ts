@@ -25,7 +25,6 @@ export const Table = styled(AntdTable)`
   & tbody .ant-table-cell {
     font-size: ${FONT_SIZE.xs};
     line-height: 1.25rem;
-    color: var(--text-main-color);
     border-bottom: 1px solid rgb(255 255 255 / 0.04);
   }
 
@@ -41,7 +40,9 @@ export const Table = styled(AntdTable)`
   &
     .ant-table-thead
     > tr
-    > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+    > th:not(:last-child):not(.ant-table-selection-column):not(
+      .ant-table-row-expand-icon-cell
+    ):not([colspan])::before {
     background-color: #3f3f3f;
   }
 

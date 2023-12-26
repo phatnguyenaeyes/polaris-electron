@@ -1,16 +1,22 @@
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import TextField from '@app/components/formControl/TextField';
+import UploadListField from '@app/components/formControl/UploadListField';
 import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
 import { topicService } from '@app/services/topic.service';
 import { topicGroupService } from '@app/services/topicGroup.service';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import * as yup from 'yup';
+import AnswerGroupField from './components/AnswerGroupField';
+import VideoLoopField from './components/VideoContentField';
+import VideoStartField from './components/VideoStartField';
+import VideoContentField from './components/VideoContentField';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
@@ -18,7 +24,6 @@ import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { useTranslation } from 'react-i18next';
 import SelectField from '@app/components/formControl/SelectField';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
 
 interface EditTemplateFormInterface {
   topicName: string;
@@ -26,9 +31,8 @@ interface EditTemplateFormInterface {
   videoContentLayout: string;
   videoEndLayout: string;
   libraryContent: any[];
-  videoLoopOption: string;
-  type: string;
   link_chart: string;
+  videoLoopOption: string;
   contentTopic?: {
     _id: string;
     video_opening: any;
@@ -69,17 +73,12 @@ const AnswerLibraryEditPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    link_chart: yup.string().when('type', {
-      is: (layout: string) => layout === 'chart',
-      then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-      otherwise: yup.string().notRequired(),
-    }),
+    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
       .of(
         yup.object().shape({
-          _id: yup.string().nullable(),
+          _id: yup.string().nullable().notRequired(),
           video_opening: yup.array().nullable(),
           content_opening: yup
             .string()
@@ -91,11 +90,6 @@ const AnswerLibraryEditPage: React.FC = () => {
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          // chart_symbol: yup.string().when('layout', {
-          //   is: (layout: string) => layout === 'layout-1',
-          //   then: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          //   otherwise: yup.string().notRequired(),
-          // }),
           background: yup.array().nullable(),
         }),
       )
@@ -163,9 +157,7 @@ const AnswerLibraryEditPage: React.FC = () => {
 
   const editFormMethods = useForm<EditTemplateFormInterface>({
     resolver: yupResolver(editFormSchema),
-    defaultValues: {
-      type: 'chart',
-    },
+    defaultValues: {},
   });
 
   useEffect(() => {
@@ -191,6 +183,9 @@ const AnswerLibraryEditPage: React.FC = () => {
             content_conclusion,
             layout,
             background,
+            vBee_audio_body,
+            vBee_audio_conclusion,
+            vBee_audio_opening,
           } = ct;
           return {
             _id: ct._id,
@@ -238,6 +233,9 @@ const AnswerLibraryEditPage: React.FC = () => {
             }),
             content_conclusion,
             layout,
+            vBee_audio_body,
+            vBee_audio_conclusion,
+            vBee_audio_opening,
           };
         });
         const answerGroup = (groupsRes || []).map((group: any) => {
@@ -346,6 +344,8 @@ const AnswerLibraryEditPage: React.FC = () => {
 
           if (contentTopic && contentTopic?.length > 0) {
             const contentTopicLength = contentTopic?.length || 0;
+            const contentErr = [];
+            const contentSuccess = [];
             for (let index = 0; index < contentTopicLength; index++) {
               const contentTopicFormData = new FormData();
               const {
@@ -390,18 +390,12 @@ const AnswerLibraryEditPage: React.FC = () => {
                 content_conclusion,
               );
               contentTopicFormData.append('layout', layout as string);
-              // if (background) {
-              //   contentTopicFormData.append('background', layout as string);
-              // }
               if (background?.[0].originFileObj) {
                 contentTopicFormData.append(
                   'background',
                   background[0].originFileObj,
                 );
               }
-              // if (chart_symbol) {
-              //   contentTopicFormData.append('chart_symbol', layout as string);
-              // }
               try {
                 if (_id) {
                   await topicService.updateContentTopic(
@@ -411,15 +405,43 @@ const AnswerLibraryEditPage: React.FC = () => {
                 } else {
                   await topicService.createContentTopic(contentTopicFormData);
                 }
+                contentSuccess.push(
+                  `Success to update topic content ${index + 1}!`,
+                );
               } catch (error) {
-                notificationController.error({
-                  message: `Something wrong with topic content ${index + 1}!!`,
-                });
+                contentErr.push(`Fail to update topic content ${index + 1}!`);
+              } finally {
+                if (index === contentTopic.length - 1) {
+                  contentSuccess.length > 0 &&
+                    notificationController.success({
+                      message: 'SUCCESS',
+                      description: (
+                        <div className="d-flex flex-column">
+                          {contentSuccess.map((success, idx) => (
+                            <p key={idx}>{success}</p>
+                          ))}
+                        </div>
+                      ),
+                    });
+                  contentErr.length > 0 &&
+                    notificationController.error({
+                      message: 'ERROR',
+                      description: (
+                        <div className="d-flex flex-column">
+                          {contentErr.map((err, idx) => (
+                            <p key={idx}>{err}ll</p>
+                          ))}
+                        </div>
+                      ),
+                    });
+                }
               }
             }
           }
 
           if (answerGroup && answerGroup.length > 0) {
+            const answerErr = [];
+            const answerSuccess = [];
             for (let index = 0; index < answerGroup.length; index++) {
               const groupFormData = new FormData();
               const { _id, priority, content, keywords, answerVideo } =
@@ -452,15 +474,35 @@ const AnswerLibraryEditPage: React.FC = () => {
                 } else {
                   await topicGroupService.create(groupFormData);
                 }
+                answerSuccess.push(
+                  `Success to update answer group ${index + 1}!!`,
+                );
               } catch (error) {
-                notificationController.error({
-                  message: `Something wrong with answer ${index + 1}!!`,
-                });
+                answerErr.push(`Fail to update answer group ${index + 1}!!`);
               } finally {
                 if (index === answerGroup.length - 1) {
-                  notificationController.success({
-                    message: 'Update successfully',
-                  });
+                  answerSuccess.length > 0 &&
+                    notificationController.success({
+                      message: 'SUCCESS',
+                      description: (
+                        <div className="d-flex flex-column">
+                          {answerSuccess.map((success, idx) => (
+                            <p key={idx}>{success}</p>
+                          ))}
+                        </div>
+                      ),
+                    });
+                  answerErr.length > 0 &&
+                    notificationController.error({
+                      message: 'ERROR',
+                      description: (
+                        <div className="d-flex flex-column">
+                          {answerErr.map((err, idx) => (
+                            <p key={idx}>{err}</p>
+                          ))}
+                        </div>
+                      ),
+                    });
                 }
               }
             }
@@ -502,11 +544,11 @@ const AnswerLibraryEditPage: React.FC = () => {
                   </BaseCol>
                   <BaseCol xs={24} lg={12}>
                     <SelectField
+                      required
                       label={t('POLARIS.CHART')}
                       placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
                       name="link_chart"
                       options={[
-                        { label: 'Select chart symbol', value: '' },
                         { label: 'DXY', value: 'DXY' },
                         { label: 'XAUUSD', value: 'XAUUSD' },
                         { label: 'EURUSD', value: 'EURUSD' },
@@ -519,21 +561,6 @@ const AnswerLibraryEditPage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
-                <RadioGroupField
-                  name={`type`}
-                  label="Select topic type"
-                  radioPerRow={2}
-                  options={[
-                    {
-                      label: 'Chart',
-                      value: 'chart',
-                    },
-                    {
-                      label: 'Image',
-                      value: 'image',
-                    },
-                  ]}
-                />
                 <div>
                   <LibraryContentField
                     fieldName="contentTopic"

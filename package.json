@@ -103,6 +103,7 @@
     "@hookform/resolvers": "2.9.1",
     "@reduxjs/toolkit": "1.7.1",
     "antd": "^5.0.5",
+    "antd-img-crop": "^4.18.0",
     "axios": "0.24.0",
     "axios-mock-adapter": "1.20.0",
     "dayjs": "^1.11.10",

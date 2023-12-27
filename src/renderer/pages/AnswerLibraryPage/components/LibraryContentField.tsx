@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { SimpleAudioPlayerButton } from '@app/components/audio-player/AudioPlayer';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { useParams } from 'react-router-dom';
+import { StreamContentTopicDisplayType } from './StreamContentTopicDisplayType';
 
 interface Props {
   fieldName: string;
@@ -164,6 +165,9 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               />
             </div>
             {/*  */}
+            <StreamContentTopicDisplayType
+              fieldName={`${fieldName}.${index}`}
+            />
             <div
               style={{
                 marginBottom: '24px',

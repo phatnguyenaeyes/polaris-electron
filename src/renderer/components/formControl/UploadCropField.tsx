@@ -57,7 +57,11 @@ const beforeCropProps = {
 const draggerProps = {
   showUploadList: false,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  customRequest: ({ onSuccess }: { onSuccess: (body: any, xhr?: XMLHttpRequest) => void }) => {
+  customRequest: ({
+    onSuccess,
+  }: {
+    onSuccess: (body: any, xhr?: XMLHttpRequest) => void;
+  }) => {
     setTimeout(() => {
       onSuccess('ok');
     }, 0);
@@ -82,7 +86,9 @@ const UploadCropBase: React.FC<UploadCropFieldProps> = (props) => {
   } = props;
 
   const hasError = !!fieldError;
-  const onChangeUpload = async ({ fileList: newFileList }: UploadChangeParam) => {
+  const onChangeUpload = async ({
+    fileList: newFileList,
+  }: UploadChangeParam) => {
     onChange && onChange([...newFileList]);
   };
 
@@ -126,7 +132,7 @@ const UploadCropBase: React.FC<UploadCropFieldProps> = (props) => {
         modalTitle="Cắt ảnh"
         modalOk="Ok"
         modalCancel="Huỷ"
-        aspect={16 / 9}
+        aspect={9 / 16}
         quality={1}
         minZoom={1}
         {...beforeCropProps}
@@ -193,7 +199,12 @@ function UploadCropField(props: UploadCropFieldProps): JSX.Element {
       name={props.name}
       control={control}
       render={({ field: { onChange, value }, fieldState }) => (
-        <UploadCropBase {...internalProps} onChange={onChange} fileList={value} fieldError={fieldState.error} />
+        <UploadCropBase
+          {...internalProps}
+          onChange={onChange}
+          fileList={value}
+          fieldError={fieldState.error}
+        />
       )}
     />
   );

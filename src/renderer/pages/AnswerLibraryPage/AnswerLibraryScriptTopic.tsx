@@ -25,6 +25,7 @@ import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { scriptService } from '@app/services/script.service';
 import { useTranslation } from 'react-i18next';
 import SelectField from '@app/components/formControl/SelectField';
+import RadioGroupField from '@app/components/formControl/RadioGroupField';
 
 const DEFAULT_LAYOUT = 'layout-1';
 
@@ -36,6 +37,7 @@ interface EditTemplateFormInterface {
   libraryContent: any[];
   link_chart: string;
   videoLoopOption: string;
+  type?: string;
   contentTopic?: {
     _id: string;
     video_opening: any;
@@ -77,6 +79,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
@@ -179,6 +182,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
         const {
           _id,
           link_chart,
+          type,
           name,
           contentTopics: contentTopicsRes,
           groups: groupsRes,
@@ -287,6 +291,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
         const mappingDetail = {
           topicName: name,
+          type,
           link_chart: link_chart || '',
           contentTopic,
           answerGroup,
@@ -312,11 +317,14 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
     try {
       console.log('create form values:', values);
       setLoading(true);
-      const { topicName, link_chart, contentTopic, answerGroup } = values;
+      const { topicName, type, link_chart, contentTopic, answerGroup } = values;
 
       const createTopicRes = await topicService.create({
         name: topicName,
-        link_chart: link_chart,
+        type,
+        ...(link_chart && {
+          link_chart: link_chart,
+        }),
       });
       // Content topic
       const promiseListContentTopic = (contentTopic || []).map(async (ct) => {
@@ -424,6 +432,21 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
+                <RadioGroupField
+                  name={`type`}
+                  label="Select topic type"
+                  radioPerRow={2}
+                  options={[
+                    {
+                      label: 'Chart',
+                      value: 'CHART',
+                    },
+                    {
+                      label: 'Image',
+                      value: 'IMAGE',
+                    },
+                  ]}
+                />
                 <div>
                   <LibraryContentField
                     fieldName="contentTopic"

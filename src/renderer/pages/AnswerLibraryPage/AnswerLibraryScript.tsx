@@ -223,10 +223,14 @@ const AnswerLibraryScriptPage: React.FC = () => {
     try {
       console.log('create form values:', values);
       setLoading(true);
-      const { topicName, contentTopic, answerGroup } = values;
+      const { topicName, type, link_chart, contentTopic, answerGroup } = values;
 
       const createTopicRes = await topicService.create({
         name: topicName,
+        type,
+        ...(link_chart && {
+          link_chart: link_chart,
+        }),
       });
       // Content topic
       const promiseListContentTopic = (contentTopic || []).map(async (ct) => {
@@ -347,11 +351,11 @@ const AnswerLibraryScriptPage: React.FC = () => {
                   options={[
                     {
                       label: 'Chart',
-                      value: 'chart',
+                      value: 'CHART',
                     },
                     {
                       label: 'Image',
-                      value: 'image',
+                      value: 'IMAGE',
                     },
                   ]}
                 />

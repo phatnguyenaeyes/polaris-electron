@@ -132,7 +132,7 @@ const UploadCropBase: React.FC<UploadCropFieldProps> = (props) => {
         modalTitle="Cắt ảnh"
         modalOk="Ok"
         modalCancel="Huỷ"
-        aspect={9 / 16}
+        aspect={16 / 9}
         quality={1}
         minZoom={1}
         {...beforeCropProps}

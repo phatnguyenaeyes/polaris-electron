@@ -24,6 +24,7 @@ import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { useTranslation } from 'react-i18next';
 import SelectField from '@app/components/formControl/SelectField';
+import RadioGroupField from '@app/components/formControl/RadioGroupField';
 
 interface EditTemplateFormInterface {
   topicName: string;
@@ -32,6 +33,7 @@ interface EditTemplateFormInterface {
   videoEndLayout: string;
   libraryContent: any[];
   link_chart: string;
+  type?: string;
   videoLoopOption: string;
   contentTopic?: {
     _id: string;
@@ -73,6 +75,7 @@ const AnswerLibraryEditPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
@@ -168,6 +171,7 @@ const AnswerLibraryEditPage: React.FC = () => {
         const {
           _id,
           link_chart,
+          type,
           name,
           contentTopics: contentTopicsRes,
           groups: groupsRes,
@@ -267,6 +271,7 @@ const AnswerLibraryEditPage: React.FC = () => {
         const mappingDetail = {
           topicName: name,
           link_chart,
+          type,
           contentTopic:
             contentTopic && contentTopic?.length > 0
               ? contentTopic
@@ -321,11 +326,12 @@ const AnswerLibraryEditPage: React.FC = () => {
     try {
       console.log('edit form values:', values);
       setLoading(true);
-      const { topicName, link_chart, contentTopic, answerGroup } = values;
+      const { topicName, type, link_chart, contentTopic, answerGroup } = values;
       // Update topic
       if (topicId) {
         await topicService.update(topicId, {
           name: topicName,
+          type,
           ...(link_chart && {
             link_chart: link_chart,
           }),
@@ -561,6 +567,21 @@ const AnswerLibraryEditPage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
+                <RadioGroupField
+                  name={`type`}
+                  label="Select topic type"
+                  radioPerRow={2}
+                  options={[
+                    {
+                      label: 'Chart',
+                      value: 'CHART',
+                    },
+                    {
+                      label: 'Image',
+                      value: 'IMAGE',
+                    },
+                  ]}
+                />
                 <div>
                   <LibraryContentField
                     fieldName="contentTopic"

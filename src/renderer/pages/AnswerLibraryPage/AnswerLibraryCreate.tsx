@@ -17,6 +17,7 @@ import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import SelectField from '@app/components/formControl/SelectField';
 import { useTranslation } from 'react-i18next';
+import RadioGroupField from '@app/components/formControl/RadioGroupField';
 
 interface CreateTemplateFormInterface {
   topicName: string;
@@ -63,6 +64,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
 
   const createFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
@@ -187,9 +189,10 @@ const AnswerLibraryCreatePage: React.FC = () => {
     try {
       console.log('create form values:', values);
       setLoading(true);
-      const { topicName, link_chart, contentTopic, answerGroup } = values;
+      const { topicName, type, link_chart, contentTopic, answerGroup } = values;
       const createData = {
         name: topicName,
+        type,
         ...(link_chart && {
           link_chart: link_chart,
         }),
@@ -399,6 +402,21 @@ const AnswerLibraryCreatePage: React.FC = () => {
                     />
                   </BaseCol>
                 </BaseRow>
+                <RadioGroupField
+                  name={`type`}
+                  label="Select topic type"
+                  radioPerRow={2}
+                  options={[
+                    {
+                      label: 'Chart',
+                      value: 'CHART',
+                    },
+                    {
+                      label: 'Image',
+                      value: 'IMAGE',
+                    },
+                  ]}
+                />
                 <div>
                   <LibraryContentField fieldName="contentTopic" />
                 </div>

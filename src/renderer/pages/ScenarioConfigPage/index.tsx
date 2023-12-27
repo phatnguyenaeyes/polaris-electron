@@ -77,23 +77,30 @@ const ScenarioConfigPage: React.FC = () => {
     {
       title: t('POLARIS.TITLE'),
       dataIndex: 'title',
-      width: '20%',
+      key: 'title',
+      width: 450,
       render: (_, record: any) => {
         return <span>{record?.data?.title || '  '}</span>;
       },
     },
     {
       title: t('POLARIS.LINK'),
-      dataIndex: 'create_at',
+      dataIndex: 'link',
+      key: 'link',
+      width: 150,
       render: (_, record: any) => (
-        <a href={record?.data?.url || ''} target="_blank" rel="noreferrer">
-          {record?.data?.url || ''}
-        </a>
+        <div style={{ width: '400px' }}>
+          <a href={record?.data?.url || ''} target="_blank" rel="noreferrer">
+            {record?.data?.url || ''}
+          </a>
+        </div>
       ),
     },
     {
       title: t('POLARIS.CREATED_DATE'),
       dataIndex: 'create_at',
+      key: 'create_at',
+      width: 450,
       render: (_, record: any) => (
         <span>{moment(record?.created_at).format('DD-MM-YYYY HH:mm:ss')}</span>
       ),
@@ -101,7 +108,8 @@ const ScenarioConfigPage: React.FC = () => {
     {
       title: t('POLARIS.ACTION'),
       dataIndex: 'actions',
-      width: '10%',
+      key: 'actions',
+      width: 450,
       render: (_, record: any) => {
         return (
           <BaseSpace>

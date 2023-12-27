@@ -81,25 +81,13 @@ const AnswerLibraryScriptPage: React.FC = () => {
       .of(
         yup.object().shape({
           _id: yup.string().nullable().notRequired(),
-          video_opening: yup
-            .array()
-            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-            .nullable(),
+          video_opening: yup.array().nullable(),
           content_opening: yup
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_body: yup
-            .array()
-            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-            .nullable(),
+          video_body: yup.array().nullable(),
           content_body: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_conclusion: yup
-            .array()
-            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-            .nullable(),
+          video_conclusion: yup.array().nullable(),
           content_conclusion: yup
             .string()
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),

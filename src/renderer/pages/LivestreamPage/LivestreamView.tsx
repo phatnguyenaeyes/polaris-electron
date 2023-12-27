@@ -12,16 +12,22 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import { Drawer } from 'antd';
 const initialPagination = {
   total: 0,
 };
 
 const LivestreamPage: React.FC = () => {
+  const [visible, setVisible] = useState(false);
+
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
+  const [tableData, setTableData] = useState<{
+    data: BasicTableRow[];
+    pagination: Pagination;
+    loading: boolean;
+  }>({
     data: [],
     pagination: initialPagination,
     loading: false,
@@ -54,7 +60,11 @@ const LivestreamPage: React.FC = () => {
   const tableHandler = (params: Record<string, unknown>) => {
     const page = params?.page || 1;
     const platform = params?.platform || '';
-    const is_replied = params?.is_replied ? (params?.is_replied === 'true' ? true : false) : '';
+    const is_replied = params?.is_replied
+      ? params?.is_replied === 'true'
+        ? true
+        : false
+      : '';
     fetchCommentList({
       page,
       ...(platform && { platform }),
@@ -95,7 +105,9 @@ const LivestreamPage: React.FC = () => {
     {
       title: t('POLARIS.TIME'),
       dataIndex: 'commented_at',
-      render: (commentedAt: string) => <span>{moment(commentedAt).format('DD-MM-YYYY HH:mm:ss')}</span>,
+      render: (commentedAt: string) => (
+        <span>{moment(commentedAt).format('DD-MM-YYYY HH:mm:ss')}</span>
+      ),
     },
   ];
 
@@ -149,6 +161,31 @@ const LivestreamPage: React.FC = () => {
         </BaseButton>
       </div>
       <div>
+        <BaseButton className="mt-5" onClick={() => setVisible(true)}>
+          Show Live Stream
+        </BaseButton>
+        {visible ? (
+          <Drawer
+            open={visible}
+            onClose={() => setVisible(false)}
+            width="100VW"
+          >
+            <webview
+              id="foo"
+              src={`https://staging.polarista.ai/render?live_setting=${
+                id || ''
+              }`}
+              style={{
+                display: 'flex',
+                margin: 'auto',
+                width: '1080px',
+                height: '1920px',
+              }}
+            ></webview>
+          </Drawer>
+        ) : null}
+      </div>
+      <div style={{ overflow: 'scroll' }}>
         <BaseSortPaginationTable
           columns={columns}
           dataSource={tableData.data}

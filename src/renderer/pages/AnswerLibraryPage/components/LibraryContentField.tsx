@@ -92,7 +92,7 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
             }}
           >
             <S.FieldInfoContentTabItem>
-              <PlusOutlined className="h-6 w-6 text-black" />
+              <PlusOutlined className="" />
               <span
                 style={{
                   display: 'inline-block',
@@ -119,7 +119,7 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
         return (
           <div
             key={item.id}
-            className="relative mb-3 rounded-[12px] bg-[#F5F5F5] p-[12px]"
+            className="relative mb-3 rounded-[12px] p-[12px]"
             style={{
               marginBottom: '24px',
               display: index === activeTab ? 'block' : 'none',

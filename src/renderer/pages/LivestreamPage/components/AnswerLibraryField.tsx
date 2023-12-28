@@ -15,7 +15,10 @@ interface AnswerLibraryFieldProps {
   allowAdd?: boolean;
 }
 
-const AnswerLibraryField: React.FC<AnswerLibraryFieldProps> = ({ fieldName, allowAdd = true }) => {
+const AnswerLibraryField: React.FC<AnswerLibraryFieldProps> = ({
+  fieldName,
+  allowAdd = true,
+}) => {
   const { t } = useTranslation();
   const { control } = useFormContext();
   const [topicList, setTopicList] = useState([]);
@@ -92,8 +95,8 @@ const AnswerLibraryField: React.FC<AnswerLibraryFieldProps> = ({ fieldName, allo
             });
           }}
         >
-          <PlusCircleOutlined className="h-6 w-6 text-black" />
-          <span className="inline-flex pl-2 text-[15px] text-black">{t('POLARIS.ADD_TOPIC')}</span>
+          <PlusCircleOutlined className="" />
+          <span className="">{t('POLARIS.ADD_TOPIC')}</span>
         </BaseButton>
       )}
 

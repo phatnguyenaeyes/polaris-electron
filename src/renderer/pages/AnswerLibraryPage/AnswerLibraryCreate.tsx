@@ -63,97 +63,95 @@ const AnswerLibraryCreatePage: React.FC = () => {
   const navigate = useNavigate();
 
   const createFormSchema = yup.object().shape({
-    topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    contentTopic: yup
-      .array()
-      .of(
-        yup.object().shape({
-          video_opening: yup.array().nullable(),
-          content_opening: yup
-            .string()
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_body: yup.array().nullable(),
-          content_body: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_conclusion: yup.array().nullable(),
-          content_conclusion: yup
-            .string()
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          background: yup.array().nullable(),
-        }),
-      )
-      .test(
-        'shouldRequireContentBg',
-        'Topic content background should be set.',
-        function validateTopicContentBg(currentTopicContent) {
-          const errorBgFieldIdxs = [];
-          if (this.parent?.type === 'image') {
-            if (currentTopicContent && currentTopicContent?.length > 0) {
-              for (let i = 0; i < currentTopicContent.length; i++) {
-                if (
-                  !currentTopicContent[i].background ||
-                  currentTopicContent[i].background?.length === 0
-                ) {
-                  errorBgFieldIdxs.push(i);
-                }
-              }
-              if (errorBgFieldIdxs.length > 0) {
-                return this.createError({
-                  path: `${this.path}`,
-                  message: 'Please choose background',
-                });
-              }
-
-              // errorBgFieldIdxs.forEach((eBgIdx) => {
-              //   const convertIdx = `${eBgIdx}`;
-              //   const fieldPath = `${this.path}[0].background`;
-              //   console.log('fieldPath:', fieldPath);
-              //   return this.createError({
-              //     path: fieldPath,
-              //     message: 'Please choose background',
-              //   });
-              // });
-              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
-            }
-          }
-
-          return true;
-        },
-      )
-      .min(1, 'Tối thiểu 1')
-      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    answerGroup: yup
-      .array()
-      .of(
-        yup.object().shape({
-          priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          keywords: yup
-            .array()
-            .min(1, 'Tối thiểu 1')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-            .nullable(),
-          answerVideo: yup
-            .array()
-            .of(
-              yup.object().shape({
-                video: yup.array().nullable(),
-                videoLayout: yup
-                  .string()
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-                answerContent: yup
-                  .string()
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-              }),
-            )
-            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-        }),
-      )
-      .min(1, 'Tối thiểu 1')
-      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // contentTopic: yup
+    //   .array()
+    //   .of(
+    //     yup.object().shape({
+    //       video_opening: yup.array().nullable(),
+    //       content_opening: yup
+    //         .string()
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       video_body: yup.array().nullable(),
+    //       content_body: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       video_conclusion: yup.array().nullable(),
+    //       content_conclusion: yup
+    //         .string()
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       background: yup.array().nullable(),
+    //     }),
+    //   )
+    //   .test(
+    //     'shouldRequireContentBg',
+    //     'Topic content background should be set.',
+    //     function validateTopicContentBg(currentTopicContent) {
+    //       const errorBgFieldIdxs = [];
+    //       if (this.parent?.type === 'image') {
+    //         if (currentTopicContent && currentTopicContent?.length > 0) {
+    //           for (let i = 0; i < currentTopicContent.length; i++) {
+    //             if (
+    //               !currentTopicContent[i].background ||
+    //               currentTopicContent[i].background?.length === 0
+    //             ) {
+    //               errorBgFieldIdxs.push(i);
+    //             }
+    //           }
+    //           if (errorBgFieldIdxs.length > 0) {
+    //             return this.createError({
+    //               path: `${this.path}`,
+    //               message: 'Please choose background',
+    //             });
+    //           }
+    //           // errorBgFieldIdxs.forEach((eBgIdx) => {
+    //           //   const convertIdx = `${eBgIdx}`;
+    //           //   const fieldPath = `${this.path}[0].background`;
+    //           //   console.log('fieldPath:', fieldPath);
+    //           //   return this.createError({
+    //           //     path: fieldPath,
+    //           //     message: 'Please choose background',
+    //           //   });
+    //           // });
+    //           // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
+    //         }
+    //       }
+    //       return true;
+    //     },
+    //   )
+    //   .min(1, 'Tối thiểu 1')
+    //   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // answerGroup: yup
+    //   .array()
+    //   .of(
+    //     yup.object().shape({
+    //       priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       keywords: yup
+    //         .array()
+    //         .min(1, 'Tối thiểu 1')
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+    //         .nullable(),
+    //       answerVideo: yup
+    //         .array()
+    //         .of(
+    //           yup.object().shape({
+    //             video: yup.array().nullable(),
+    //             videoLayout: yup
+    //               .string()
+    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //             answerContent: yup
+    //               .string()
+    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //           }),
+    //         )
+    //         .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //     }),
+    //   )
+    //   .min(1, 'Tối thiểu 1')
+    //   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
   });
 
   const createFormMethods = useForm<CreateTemplateFormInterface>({
@@ -222,21 +220,21 @@ const AnswerLibraryCreatePage: React.FC = () => {
             if (video_opening?.length > 0) {
               contentTopicFormData.append(
                 'video_opening',
-                video_opening[0].originFileObj,
+                video_opening[0]?.originFileObj,
               );
             }
             contentTopicFormData.append('content_opening', content_opening);
             if (video_body?.length > 0) {
               contentTopicFormData.append(
                 'video_body',
-                video_body[0].originFileObj,
+                video_body[0]?.originFileObj,
               );
             }
             contentTopicFormData.append('content_body', content_body);
             if (video_conclusion?.length > 0) {
               contentTopicFormData.append(
                 'video_conclusion',
-                video_conclusion[0].originFileObj,
+                video_conclusion[0]?.originFileObj,
               );
             }
             contentTopicFormData.append(
@@ -304,7 +302,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
               if (av.video?.length > 0) {
                 groupFormData.append(
                   `answer_video_${idx + 1}`,
-                  av.video[0].originFileObj,
+                  av.video[0]?.originFileObj,
                 );
               }
               groupFormData.append(`answer_layout_${idx + 1}`, av.videoLayout);
@@ -390,19 +388,19 @@ const AnswerLibraryCreatePage: React.FC = () => {
                       placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
                       name="link_chart"
                       options={[
-                        { label: 'DXY', value: 'DXY' },
+                        // { label: 'DXY', value: 'DXY' },
                         { label: 'XAUUSD', value: 'XAUUSD' },
                         { label: 'EURUSD', value: 'EURUSD' },
                         { label: 'GBPUSD', value: 'GBPUSD' },
                         { label: 'USDJPY', value: 'USDJPY' },
-                        { label: 'USTEC', value: 'USTEC' },
-                        { label: 'USOIL', value: 'USOIL' },
+                        // { label: 'USTEC', value: 'USTEC' },
+                        // { label: 'USOIL', value: 'USOIL' },
                         { label: 'BTCUSD', value: 'BTCUSD' },
                       ]}
                     />
                   </BaseCol>
                 </BaseRow>
-                <RadioGroupField
+                {/* <RadioGroupField
                   name={`type`}
                   label="Select topic type"
                   radioPerRow={2}
@@ -416,7 +414,7 @@ const AnswerLibraryCreatePage: React.FC = () => {
                       value: 'IMAGE',
                     },
                   ]}
-                />
+                /> */}
                 <div>
                   <LibraryContentField fieldName="contentTopic" />
                 </div>

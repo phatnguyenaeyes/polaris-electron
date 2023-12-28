@@ -111,26 +111,26 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
             />
           </div>
           <BaseRow style={{ marginBottom: 24 }}>
-            <BaseCol xs={12} lg={10}>
-              <RadioGroupField
-                name={`${fieldName}.${index}.priority`}
-                radioPerRow={2}
-                options={[
-                  {
-                    label: `${t('POLARIS.LEVEL')} 1`,
-                    value: '1',
-                  },
-                  {
-                    label: `${t('POLARIS.LEVEL')} 2`,
-                    value: '2',
-                  },
-                  {
-                    label: `${t('POLARIS.LEVEL')} 3`,
-                    value: '3',
-                  },
-                ]}
-              />
-            </BaseCol>
+            {/* <BaseCol xs={12} lg={10}>
+                <RadioGroupField
+                  name={`${fieldName}.${index}.priority`}
+                  radioPerRow={2}
+                  options={[
+                    {
+                      label: `${t('POLARIS.LEVEL')} 1`,
+                      value: '1',
+                    },
+                    {
+                      label: `${t('POLARIS.LEVEL')} 2`,
+                      value: '2',
+                    },
+                    {
+                      label: `${t('POLARIS.LEVEL')} 3`,
+                      value: '3',
+                    },
+                  ]}
+                />
+              </BaseCol> */}
             <BaseCol xs={12} lg={14}>
               <TextField
                 name={`${fieldName}.${index}.content`}

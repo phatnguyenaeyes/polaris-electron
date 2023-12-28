@@ -20,7 +20,7 @@ interface Props {
 
 const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
   const { t } = useTranslation();
-  const { control, formState } = useFormContext();
+  const { control, formState, watch } = useFormContext();
   const [activeTab, setActiveTab] = useState(0);
   const { fields, append, remove } = useFieldArray({
     name: fieldName,
@@ -33,71 +33,79 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
         marginBottom: '24px',
       }}
     >
-      {fields.map((item, index) => (
-        <div
-          key={item.id}
-          style={{
-            marginBottom: '24px',
-          }}
-        >
-          <CardContent>
-            <BaseRow>
-              <BaseCol xs={24} lg={6}>
-                <UploadListField
-                  required
-                  videoOnly
-                  placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                  label={t('POLARIS.ANSWER')}
-                  suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                  name={`${fieldName}.${index}.video`}
-                  maxLength={1}
-                />
-                <RadioGroupField
-                  name={`${fieldName}.${index}.videoLayout`}
-                  label={t('POLARIS.LAYOUT_SAMPLE')}
-                  radioPerRow={2}
-                  style={{ width: '100%' }}
-                  options={[
-                    {
-                      label: 'Layout 1',
-                      value: 'layout-1',
-                    },
-                    {
-                      label: 'Layout 2',
-                      value: 'layout-2',
-                    },
-                  ]}
-                />
-              </BaseCol>
-              <BaseCol xs={24} lg={18}>
-                <TextField
-                  name={`${fieldName}.${index}.answerContent`}
-                  textArea
-                />
-                {fields.length > 1 ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                    }}
-                  >
-                    <BaseButton
-                      htmlType="button"
-                      type="dashed"
-                      danger
-                      onClick={() => {
-                        remove(index);
+      {fields.map((item, index) => {
+        const videoLayoutValue = watch(`${fieldName}.${index}.videoLayout`);
+
+        return (
+          <div
+            key={item.id}
+            style={{
+              marginBottom: '24px',
+            }}
+          >
+            <CardContent>
+              <BaseRow>
+                <BaseCol xs={24} lg={24}>
+                  <RadioGroupField
+                    name={`${fieldName}.${index}.videoLayout`}
+                    label={t('POLARIS.LAYOUT_SAMPLE')}
+                    radioPerRow={2}
+                    style={{ width: '100%' }}
+                    options={[
+                      {
+                        label: 'Layout 1',
+                        value: 'layout-1',
+                      },
+                      {
+                        label: 'Layout 2',
+                        value: 'layout-2',
+                      },
+                    ]}
+                  />
+                </BaseCol>
+                <BaseCol xs={24} lg={24}>
+                  {videoLayoutValue === 'layout-2' ? (
+                    <TextField
+                      name={`${fieldName}.${index}.answerContent`}
+                      textArea
+                    />
+                  ) : null}
+                  {videoLayoutValue === 'layout-1' ? (
+                    <UploadListField
+                      required
+                      videoOnly
+                      placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                      label={t('POLARIS.ANSWER')}
+                      suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                      name={`${fieldName}.${index}.video`}
+                      maxLength={1}
+                    />
+                  ) : null}
+                  {fields.length > 1 ? (
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
                       }}
                     >
-                      {t('POLARIS.DELETE')}
-                    </BaseButton>
-                  </div>
-                ) : null}
-              </BaseCol>
-            </BaseRow>
-          </CardContent>
-        </div>
-      ))}
+                      <BaseButton
+                        htmlType="button"
+                        type="dashed"
+                        danger
+                        onClick={() => {
+                          remove(index);
+                        }}
+                      >
+                        {t('POLARIS.DELETE')}
+                      </BaseButton>
+                    </div>
+                  ) : null}
+                </BaseCol>
+              </BaseRow>
+            </CardContent>
+          </div>
+        );
+      })}
       <br />
       <div
         style={{

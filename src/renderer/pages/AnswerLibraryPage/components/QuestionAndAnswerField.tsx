@@ -32,7 +32,10 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
     >
       <div className="d-flex">
         <S.FieldInfoContentTabContainer className="justify-content-between w-100">
-          <div className="d-flex" style={{ maxWidth: 'calc(100% - 210px)', overflowX: 'auto' }}>
+          <div
+            className="d-flex"
+            style={{ maxWidth: 'calc(100% - 210px)', overflowX: 'auto' }}
+          >
             {fields.map((item, idx) => (
               <S.FieldInfoContentTab
                 $active={idx === activeTab}
@@ -65,7 +68,7 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
             }}
           >
             <S.FieldInfoContentTabItem>
-              <PlusOutlined className="h-6 w-6 text-black" />
+              <PlusOutlined className="" />
               <span
                 style={{
                   display: 'inline-block',

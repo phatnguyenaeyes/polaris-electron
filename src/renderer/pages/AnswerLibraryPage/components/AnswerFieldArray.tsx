@@ -1,4 +1,8 @@
-import { CloseOutlined, PlusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  PlusCircleOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { CardContent } from '@app/components/cardContent/CardContent';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
@@ -66,7 +70,10 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
                 />
               </BaseCol>
               <BaseCol xs={24} lg={18}>
-                <TextField name={`${fieldName}.${index}.answerContent`} textArea />
+                <TextField
+                  name={`${fieldName}.${index}.answerContent`}
+                  textArea
+                />
                 {fields.length > 1 ? (
                   <div
                     style={{
@@ -99,15 +106,17 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
         }}
       >
         <BaseButton
-          className="flex w-full items-center justify-center rounded-[12px] bg-[#F6F6F6] normal-case"
+          className="flex w-full items-center justify-center rounded-[12px] normal-case"
           htmlType="button"
           onClick={() => {
             append({ video: '', name: '', videoLayout: 'layout1' });
             setActiveTab(fields.length || 0);
           }}
         >
-          <PlusCircleOutlined className="h-6 w-6 text-black" />
-          <span className="inline-flex pl-2 text-[15px] text-black">{t('POLARIS.ADD_ANSWER')}</span>
+          <PlusCircleOutlined className="" />
+          <span className="inline-flex pl-2 text-[15px]">
+            {t('POLARIS.ADD_ANSWER')}
+          </span>
         </BaseButton>
       </div>
     </div>

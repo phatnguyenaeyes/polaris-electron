@@ -12,14 +12,12 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Drawer } from 'antd';
+
 const initialPagination = {
   total: 0,
 };
 
 const LivestreamPage: React.FC = () => {
-  const [visible, setVisible] = useState(false);
-
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,6 +47,26 @@ const LivestreamPage: React.FC = () => {
       setTableData({ data: data, pagination, loading: false });
     } catch (error) {}
   }
+
+  const handleOpenLiveStream = () => {
+    window.electron.ipcRenderer.sendMessage('createLiveStreamWindow' as any, [
+      {
+        link: `https://staging.polarista.ai/render?live_setting=${id || ''}`,
+      },
+    ]);
+    //   <webview
+    //   id="foo"
+    //   src={`https://staging.polarista.ai/render?live_setting=${
+    //     id || ''
+    //   }`}
+    //   style={{
+    //     display: 'flex',
+    //     margin: 'auto',
+    //     width: '1080px',
+    //     height: '1920px',
+    //   }}
+    // ></webview>
+  };
 
   useEffect(() => {
     if (id) {
@@ -161,29 +179,9 @@ const LivestreamPage: React.FC = () => {
         </BaseButton>
       </div>
       <div>
-        <BaseButton className="mt-5" onClick={() => setVisible(true)}>
+        <BaseButton className="mt-5" onClick={handleOpenLiveStream}>
           Show Live Stream
         </BaseButton>
-        {visible ? (
-          <Drawer
-            open={visible}
-            onClose={() => setVisible(false)}
-            width="100VW"
-          >
-            <webview
-              id="foo"
-              src={`https://staging.polarista.ai/render?live_setting=${
-                id || ''
-              }`}
-              style={{
-                display: 'flex',
-                margin: 'auto',
-                width: '1080px',
-                height: '1920px',
-              }}
-            ></webview>
-          </Drawer>
-        ) : null}
       </div>
       <div style={{ overflow: 'scroll' }}>
         <BaseSortPaginationTable

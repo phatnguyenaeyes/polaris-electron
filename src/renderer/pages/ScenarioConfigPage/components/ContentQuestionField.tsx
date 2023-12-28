@@ -10,7 +10,9 @@ interface ContentQuestionFieldProps {
   fieldName: string;
 }
 
-const ContentQuestionField: React.FC<ContentQuestionFieldProps> = ({ fieldName }) => {
+const ContentQuestionField: React.FC<ContentQuestionFieldProps> = ({
+  fieldName,
+}) => {
   const { t } = useTranslation();
   const { control } = useFormContext();
 
@@ -62,8 +64,8 @@ const ContentQuestionField: React.FC<ContentQuestionFieldProps> = ({ fieldName }
           });
         }}
       >
-        <PlusCircleOutlined className="h-6 w-6 text-black" />
-        <span className="inline-flex pl-2 text-[15px] text-black">{t('POLARIS.ADD_CONTENT')}</span>
+        <PlusCircleOutlined className="" />
+        <span className="">{t('POLARIS.ADD_CONTENT')}</span>
       </BaseButton>
       <br />
     </div>

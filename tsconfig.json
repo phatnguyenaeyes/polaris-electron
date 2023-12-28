@@ -15,7 +15,8 @@
     "baseUrl": "./src/",
     "outDir": ".erb/dll",
     "paths": {
-      "@app/*" : ["./renderer/*"]
+      "@app/*" : ["./renderer/*"],
+      "@main/*": ["./main/*"]
     }
   },
   "exclude": ["test", "release/build", "release/app/dist", ".erb/dll"]

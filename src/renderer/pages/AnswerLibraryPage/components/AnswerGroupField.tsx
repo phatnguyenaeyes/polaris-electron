@@ -31,7 +31,10 @@ const AnswerGroupField: React.FC<AnswerGroupFieldProps> = ({ fieldName }) => {
           <Row>
             <Col xs={24} lg={24}>
               <div className="pt-2">
-                <input type="hidden" {...register(`${fieldName}.${index}._id`)} />
+                <input
+                  type="hidden"
+                  {...register(`${fieldName}.${index}._id`)}
+                />
                 <RadioGroupField
                   required
                   label="Độ ưu tiên"
@@ -58,7 +61,10 @@ const AnswerGroupField: React.FC<AnswerGroupFieldProps> = ({ fieldName }) => {
                 <div className="form-label mb-2 text-[13px] font-medium text-black/[.5]">
                   Nội dung <span>*</span>
                 </div>
-                <TextField name={`${fieldName}.${index}.content`} placeholder="Nhập nội dung" />
+                <TextField
+                  name={`${fieldName}.${index}.content`}
+                  placeholder="Nhập nội dung"
+                />
               </div>
             </Col>
             <Col xs={24} lg={24}>
@@ -66,12 +72,17 @@ const AnswerGroupField: React.FC<AnswerGroupFieldProps> = ({ fieldName }) => {
                 <div className="form-label mb-2 text-[13px] font-medium text-black/[.5]">
                   Keyword <span>*</span>
                 </div>
-                <InputTagField name={`${fieldName}.${index}.keyword`} placeHolder="Nhập từ khoá" />
+                <InputTagField
+                  name={`${fieldName}.${index}.keyword`}
+                  placeHolder="Nhập từ khoá"
+                />
                 <br />
               </div>
             </Col>
             <Col xs={24} lg={24}>
-              <AnswerVideoField fieldName={`${fieldName}.${index}.answerVideo`} />
+              <AnswerVideoField
+                fieldName={`${fieldName}.${index}.answerVideo`}
+              />
             </Col>
           </Row>
           {fields.length > 1 ? (
@@ -83,14 +94,17 @@ const AnswerGroupField: React.FC<AnswerGroupFieldProps> = ({ fieldName }) => {
                 remove(index);
               }}
             >
-              <MinusOutlined className="h-6 w-6 text-black" />
-              <span className="inline-flex pl-2 text-[15px] text-black">Xoá nhóm keyword</span>
+              <MinusOutlined className="" />
+              <span className="inline-flex pl-2 text-[15px] text-black">
+                Xoá nhóm keyword
+              </span>
             </BaseButton>
           ) : null}
         </S.AnswerGroupWrapper>
       ))}
 
-      {formState?.errors?.answerGroup && !Array.isArray(formState?.errors?.answerGroup) ? (
+      {formState?.errors?.answerGroup &&
+      !Array.isArray(formState?.errors?.answerGroup) ? (
         <div className="" style={{ color: '#ff4d4f' }}>
           *{(formState?.errors?.answerGroup as any)?.message}
         </div>
@@ -111,8 +125,10 @@ const AnswerGroupField: React.FC<AnswerGroupFieldProps> = ({ fieldName }) => {
           });
         }}
       >
-        <PlusCircleOutlined className="h-6 w-6 text-black" />
-        <span className="inline-flex pl-2 text-[15px] text-black">Thêm nhóm keyword</span>
+        <PlusCircleOutlined className="" />
+        <span className="inline-flex pl-2 text-[15px] text-black">
+          Thêm nhóm keyword
+        </span>
       </BaseButton>
       <br />
     </div>

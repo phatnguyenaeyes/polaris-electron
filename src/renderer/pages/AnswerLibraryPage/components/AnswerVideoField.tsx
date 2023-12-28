@@ -23,7 +23,7 @@ const AnswerVideoField: React.FC<AnswerVideoFieldProps> = ({ fieldName }) => {
       }}
     >
       {fields.map((item, index) => (
-        <div key={item.id} className="relative mb-3 rounded-[12px] bg-[#F5F5F5] p-[12px]">
+        <div key={item.id} className="relative mb-3 rounded-[12px] p-[12px]">
           <Row>
             <Col xs={24} lg={24}>
               <S.UploadVideoGroup>
@@ -67,8 +67,10 @@ const AnswerVideoField: React.FC<AnswerVideoFieldProps> = ({ fieldName }) => {
             append({ video: '', name: '', videoAnswerOption: 'image' });
           }}
         >
-          <PlusCircleOutlined className="h-6 w-6 text-black" />
-          <span className="inline-flex pl-2 text-[15px] text-black">Thêm câu trả lời</span>
+          <PlusCircleOutlined className="" />
+          <span className="inline-flex pl-2 text-[15px] text-black">
+            Thêm câu trả lời
+          </span>
         </BaseButton>
       </div>
     </div>

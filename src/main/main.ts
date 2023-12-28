@@ -25,10 +25,16 @@ class AppUpdater {
 
 let mainWindow: BrowserWindow | null = null;
 
+let childWindow: BrowserWindow | null = null;
+
 ipcMain.on('ipc-example', async (event, arg) => {
   const msgTemplate = (pingPong: string) => `IPC test: ${pingPong}`;
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
+});
+
+ipcMain.on('createLiveStreamWindow', async (event, arg) => {
+  createLiveStreamWindow(event, arg);
 });
 
 if (process.env.NODE_ENV === 'production') {
@@ -71,16 +77,18 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1024,
-    height: 728,
+    // width: 1024,
+    // height: 728,
     icon: getAssetPath('icon.png'),
     webPreferences: {
+      nodeIntegration: true,
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webviewTag: true,
     },
   });
+  mainWindow.maximize();
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -111,6 +119,25 @@ const createWindow = async () => {
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line
   new AppUpdater();
+};
+
+const createLiveStreamWindow = (event: any, arg: any) => {
+  const [{ link }] = arg;
+
+  childWindow = new BrowserWindow({
+    title: 'Polaris LiveStream',
+    titleBarStyle: 'hidden',
+    width: 1080,
+    height: 1080,
+    center: true,
+    // parent: mainWindow as BrowserWindow | undefined,
+    webPreferences: {
+      nodeIntegration: true,
+      webviewTag: true,
+    },
+  });
+
+  childWindow.loadURL(link);
 };
 
 /**

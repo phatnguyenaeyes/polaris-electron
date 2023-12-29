@@ -48,7 +48,7 @@ const AudioGroup = ({ arr, slug }: { arr: any; slug: any }) => {
 const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
   const { t } = useTranslation();
   const { slug } = useParams<any>();
-  const { control, getValues } = useFormContext();
+  const { control, getValues, watch } = useFormContext();
   const [activeTab, setActiveTab] = useState(0);
   const { fields, append, remove } = useFieldArray({
     name: fieldName,
@@ -115,6 +115,7 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
         const vBee_audio_opening_arr = getValues(
           `${fieldName}.${index}.vBee_audio_opening`,
         );
+        const layoutValue = watch(`${fieldName}.${index}.layout`);
 
         return (
           <div
@@ -165,9 +166,9 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               />
             </div>
             {/*  */}
-            <StreamContentTopicDisplayType
+            {/* <StreamContentTopicDisplayType
               fieldName={`${fieldName}.${index}`}
-            />
+            /> */}
             <div
               style={{
                 marginBottom: '24px',
@@ -176,23 +177,30 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               <CardContent>
                 <>
                   <BaseRow>
-                    <BaseCol xs={24} lg={6}>
-                      <UploadListField
-                        required
-                        videoOnly
-                        placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                        label={t('POLARIS.OPENING_VIDEO')}
-                        suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                        name={`${fieldName}.${index}.video_opening`}
-                        maxLength={1}
-                      />
-                    </BaseCol>
-                    <BaseCol xs={24} lg={18}>
-                      <TextField
-                        name={`${fieldName}.${index}.content_opening`}
-                        textArea
-                      />
-                    </BaseCol>
+                    {layoutValue === 'layout-1' ? (
+                      <BaseCol xs={24} lg={6}>
+                        <UploadListField
+                          required
+                          videoOnly
+                          placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                          label={t('POLARIS.OPENING_VIDEO')}
+                          suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                          name={`${fieldName}.${index}.video_opening`}
+                          maxLength={1}
+                        />
+                      </BaseCol>
+                    ) : null}
+                    {layoutValue === 'layout-2' ? (
+                      <BaseCol xs={24} lg={18}>
+                        <p className="mb-2 after:text-[red] after:ml-2 after:content-['*']">
+                          {t('POLARIS.OPENING_VIDEO')}
+                        </p>
+                        <TextField
+                          name={`${fieldName}.${index}.content_opening`}
+                          textArea
+                        />
+                      </BaseCol>
+                    ) : null}
                   </BaseRow>
                   {vBee_audio_opening_arr ? (
                     <AudioGroup arr={vBee_audio_opening_arr} slug={slug} />
@@ -205,23 +213,30 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               <CardContent>
                 <>
                   <BaseRow>
-                    <BaseCol xs={24} lg={6}>
-                      <UploadListField
-                        required
-                        videoOnly
-                        placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                        label={t('POLARIS.MAIN_CONTENT_VIDEO')}
-                        suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                        name={`${fieldName}.${index}.video_body`}
-                        maxLength={1}
-                      />
-                    </BaseCol>
-                    <BaseCol xs={24} lg={18}>
-                      <TextField
-                        name={`${fieldName}.${index}.content_body`}
-                        textArea
-                      />
-                    </BaseCol>
+                    {layoutValue === 'layout-1' ? (
+                      <BaseCol xs={24} lg={6}>
+                        <UploadListField
+                          required
+                          videoOnly
+                          placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                          label={t('POLARIS.MAIN_CONTENT_VIDEO')}
+                          suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                          name={`${fieldName}.${index}.video_body`}
+                          maxLength={1}
+                        />
+                      </BaseCol>
+                    ) : null}
+                    {layoutValue === 'layout-2' ? (
+                      <BaseCol xs={24} lg={18}>
+                        <p className="mb-2 after:text-[red] after:ml-2 after:content-['*']">
+                          {t('POLARIS.MAIN_CONTENT_VIDEO')}
+                        </p>
+                        <TextField
+                          name={`${fieldName}.${index}.content_body`}
+                          textArea
+                        />
+                      </BaseCol>
+                    ) : null}
                   </BaseRow>
                   {vBee_audio_body_arr ? (
                     <AudioGroup arr={vBee_audio_body_arr} slug={slug} />
@@ -234,23 +249,30 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               <CardContent>
                 <>
                   <BaseRow>
-                    <BaseCol xs={24} lg={6}>
-                      <UploadListField
-                        required
-                        videoOnly
-                        placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                        label={t('POLARIS.CONCLUSION_VIDEO')}
-                        suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                        name={`${fieldName}.${index}.video_conclusion`}
-                        maxLength={1}
-                      />
-                    </BaseCol>
-                    <BaseCol xs={24} lg={18}>
-                      <TextField
-                        name={`${fieldName}.${index}.content_conclusion`}
-                        textArea
-                      />
-                    </BaseCol>
+                    {layoutValue === 'layout-1' ? (
+                      <BaseCol xs={24} lg={6}>
+                        <UploadListField
+                          required
+                          videoOnly
+                          placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                          label={t('POLARIS.CONCLUSION_VIDEO')}
+                          suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                          name={`${fieldName}.${index}.video_conclusion`}
+                          maxLength={1}
+                        />
+                      </BaseCol>
+                    ) : null}
+                    {layoutValue === 'layout-2' ? (
+                      <BaseCol xs={24} lg={18}>
+                        <p className="mb-2 after:text-[red] after:ml-2 after:content-['*']">
+                          {t('POLARIS.CONCLUSION_VIDEO')}
+                        </p>
+                        <TextField
+                          name={`${fieldName}.${index}.content_conclusion`}
+                          textArea
+                        />
+                      </BaseCol>
+                    ) : null}
                   </BaseRow>
                   {vBee_audio_conclusion_arr ? (
                     <AudioGroup arr={vBee_audio_conclusion_arr} slug={slug} />

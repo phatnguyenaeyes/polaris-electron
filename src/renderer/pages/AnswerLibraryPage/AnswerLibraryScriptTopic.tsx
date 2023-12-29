@@ -79,23 +79,63 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
       .of(
         yup.object().shape({
-          _id: yup.string().nullable().notRequired(),
-          video_opening: yup.array().nullable(),
-          content_opening: yup
-            .string()
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_body: yup.array().nullable(),
-          content_body: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          video_conclusion: yup.array().nullable(),
-          content_conclusion: yup
-            .string()
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          video_opening: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_opening: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
+          video_body: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_body: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
+          video_conclusion: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_conclusion: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
           layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
           background: yup.array().nullable(),
         }),
@@ -121,49 +161,58 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                   message: 'Please choose background',
                 });
               }
+              // errorBgFieldIdxs.forEach((eBgIdx) => {
+              //   const convertIdx = `${eBgIdx}`;
+              //   const fieldPath = `${this.path}[0].background`;
+              //   console.log('fieldPath:', fieldPath);
+              //   return this.createError({
+              //     path: fieldPath,
+              //     message: 'Please choose background',
+              //   });
+              // });
+              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
             }
           }
-
           return true;
         },
       )
       .min(1, 'Tối thiểu 1')
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    answerGroup: yup
-      .array()
-      .of(
-        yup.object().shape({
-          _id: yup.string().nullable().notRequired(),
-          priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-          keywords: yup
-            .array()
-            .min(1, 'Tối thiểu 1')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-            .nullable(),
-          answerVideo: yup
-            .array()
-            .of(
-              yup.object().shape({
-                video: yup
-                  .array()
-                  .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-                  .nullable(),
-                videoLayout: yup
-                  .string()
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-                answerContent: yup
-                  .string()
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-              }),
-            )
-            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-        }),
-      )
-      .min(1, 'Tối thiểu 1')
-      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    // answerGroup: yup
+    //   .array()
+    //   .of(
+    //     yup.object().shape({
+    //       _id: yup.string().nullable().notRequired(),
+    //       priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //       keywords: yup
+    //         .array()
+    //         .min(1, 'Tối thiểu 1')
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+    //         .nullable(),
+    //       answerVideo: yup
+    //         .array()
+    //         .of(
+    //           yup.object().shape({
+    //             video: yup
+    //               .array()
+    //               .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+    //               .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+    //               .nullable(),
+    //             videoLayout: yup
+    //               .string()
+    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //             answerContent: yup
+    //               .string()
+    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //           }),
+    //         )
+    //         .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    //     }),
+    //   )
+    //   .min(1, 'Tối thiểu 1')
+    //   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
   });
 
   const editFormMethods = useForm<EditTemplateFormInterface>({
@@ -343,16 +392,16 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
         contentTopicFormData.append('topic_id', createTopicRes?._id);
         contentTopicFormData.append(
           'video_opening',
-          video_opening[0].originFileObj,
+          video_opening[0]?.originFileObj,
         );
         contentTopicFormData.append('content_opening', content_opening);
 
-        contentTopicFormData.append('video_body', video_body[0].originFileObj);
+        contentTopicFormData.append('video_body', video_body[0]?.originFileObj);
         contentTopicFormData.append('content_body', content_body);
 
         contentTopicFormData.append(
           'video_conclusion',
-          video_conclusion[0].originFileObj,
+          video_conclusion[0]?.originFileObj,
         );
         contentTopicFormData.append('content_conclusion', content_conclusion);
 
@@ -374,7 +423,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
         answerVideo.forEach(async (av, index: number) => {
           groupFormData.append(
             `answer_video_${index + 1}`,
-            av.video[0].originFileObj,
+            av.video[0]?.originFileObj,
           );
           groupFormData.append(`answer_layout_${index + 1}`, av.videoLayout);
           groupFormData.append(`answer_content_${index + 1}`, av.answerContent);
@@ -420,19 +469,19 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                       placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
                       name="link_chart"
                       options={[
-                        { label: 'DXY', value: 'DXY' },
+                        // { label: 'DXY', value: 'DXY' },
                         { label: 'XAUUSD', value: 'XAUUSD' },
                         { label: 'EURUSD', value: 'EURUSD' },
                         { label: 'GBPUSD', value: 'GBPUSD' },
                         { label: 'USDJPY', value: 'USDJPY' },
-                        { label: 'USTEC', value: 'USTEC' },
-                        { label: 'USOIL', value: 'USOIL' },
+                        // { label: 'USTEC', value: 'USTEC' },
+                        // { label: 'USOIL', value: 'USOIL' },
                         { label: 'BTCUSD', value: 'BTCUSD' },
                       ]}
                     />
                   </BaseCol>
                 </BaseRow>
-                <RadioGroupField
+                {/* <RadioGroupField
                   name={`type`}
                   label="Select topic type"
                   radioPerRow={2}
@@ -446,7 +495,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                       value: 'IMAGE',
                     },
                   ]}
-                />
+                /> */}
                 <div>
                   <LibraryContentField
                     fieldName="contentTopic"

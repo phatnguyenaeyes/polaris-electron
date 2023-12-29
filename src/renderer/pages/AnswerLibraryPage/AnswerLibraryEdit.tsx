@@ -74,56 +74,106 @@ const AnswerLibraryEditPage: React.FC = () => {
   const [topicId, setTopicId] = useState<string>();
 
   const editFormSchema = yup.object().shape({
-    // topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     // type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    // link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    // contentTopic: yup
-    //   .array()
-    //   .of(
-    //     yup.object().shape({
-    //       _id: yup.string().nullable().notRequired(),
-    //       video_opening: yup.array().nullable(),
-    //       content_opening: yup
-    //         .string()
-    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       video_body: yup.array().nullable(),
-    //       content_body: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       video_conclusion: yup.array().nullable(),
-    //       content_conclusion: yup
-    //         .string()
-    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       background: yup.array().nullable(),
-    //     }),
-    //   )
-    //   .test(
-    //     'shouldRequireContentBg',
-    //     'Topic content background should be set.',
-    //     function validateTopicContentBg(currentTopicContent) {
-    //       const errorBgFieldIdxs = [];
-    //       if (this.parent?.type === 'image') {
-    //         if (currentTopicContent && currentTopicContent?.length > 0) {
-    //           for (let i = 0; i < currentTopicContent.length; i++) {
-    //             if (
-    //               !currentTopicContent[i].background ||
-    //               currentTopicContent[i].background?.length === 0
-    //             ) {
-    //               errorBgFieldIdxs.push(i);
-    //             }
-    //           }
-    //           if (errorBgFieldIdxs.length > 0) {
-    //             return this.createError({
-    //               path: `${this.path}`,
-    //               message: 'Please choose background',
-    //             });
-    //           }
-    //         }
-    //       }
-    //       return true;
-    //     },
-    //   )
-    //   .min(1, 'Tối thiểu 1')
-    //   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    contentTopic: yup
+      .array()
+      .of(
+        yup.object().shape({
+          video_opening: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_opening: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
+          video_body: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_body: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
+          video_conclusion: yup
+            .array()
+            .nullable()
+            .when('layout', (layout, schema) => {
+              if (layout === 'layout-1') {
+                return schema
+                  .min(1, 'Tối thiểu 1')
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG'));
+              }
+              return schema;
+            }),
+          content_conclusion: yup.string().when('layout', (layout, schema) => {
+            if (layout === 'layout-2') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema;
+          }),
+          layout: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          background: yup.array().nullable(),
+        }),
+      )
+      .test(
+        'shouldRequireContentBg',
+        'Topic content background should be set.',
+        function validateTopicContentBg(currentTopicContent) {
+          const errorBgFieldIdxs = [];
+          if (this.parent?.type === 'image') {
+            if (currentTopicContent && currentTopicContent?.length > 0) {
+              for (let i = 0; i < currentTopicContent.length; i++) {
+                if (
+                  !currentTopicContent[i].background ||
+                  currentTopicContent[i].background?.length === 0
+                ) {
+                  errorBgFieldIdxs.push(i);
+                }
+              }
+              if (errorBgFieldIdxs.length > 0) {
+                return this.createError({
+                  path: `${this.path}`,
+                  message: 'Please choose background',
+                });
+              }
+              // errorBgFieldIdxs.forEach((eBgIdx) => {
+              //   const convertIdx = `${eBgIdx}`;
+              //   const fieldPath = `${this.path}[0].background`;
+              //   console.log('fieldPath:', fieldPath);
+              //   return this.createError({
+              //     path: fieldPath,
+              //     message: 'Please choose background',
+              //   });
+              // });
+              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
+            }
+          }
+          return true;
+        },
+      )
+      .min(1, 'Tối thiểu 1')
+      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
     // answerGroup: yup
     //   .array()
     //   .of(

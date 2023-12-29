@@ -21,7 +21,11 @@ const initialPagination = {
 const LivestreamPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [tableData, setTableData] = useState<{ data: BasicTableRow[]; pagination: Pagination; loading: boolean }>({
+  const [tableData, setTableData] = useState<{
+    data: BasicTableRow[];
+    pagination: Pagination;
+    loading: boolean;
+  }>({
     data: [],
     pagination: initialPagination,
     loading: false,
@@ -58,7 +62,9 @@ const LivestreamPage: React.FC = () => {
     {
       title: t('POLARIS.LIVE_DATE'),
       dataIndex: 'create_at',
-      render: (create_at: string) => <span>{moment(create_at).format('DD-MM-YYYY HH:mm:ss')}</span>,
+      render: (create_at: string) => (
+        <span>{moment(create_at).format('DD-MM-YYYY HH:mm:ss')}</span>
+      ),
     },
     {
       title: t('POLARIS.PLATFORM'),

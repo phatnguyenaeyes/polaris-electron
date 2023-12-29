@@ -1,7 +1,7 @@
 export const BORDER_RADIUS = '7px';
 
 export const BASE_COLORS = {
-  primary: '#161E5C',
+  primary: '#0b98ac',
   white: '#ffffff',
   black: '#000000',
   green: '#008000',

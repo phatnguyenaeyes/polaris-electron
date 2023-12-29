@@ -42,13 +42,19 @@ export const Button = styled(AntButton)<BtnProps>`
         &:hover {
           color: rgba(${defineColorBySeverity(props.$severity, true)}, 0.9);
           background: var(--background-color);
-          border-color: rgba(${defineColorBySeverity(props.$severity, true)}, 0.9);
+          border-color: rgba(
+            ${defineColorBySeverity(props.$severity, true)},
+            0.9
+          );
         }
 
         &:focus {
           color: rgba(${defineColorBySeverity(props.$severity, true)}, 0.9);
           background: var(--background-color);
-          border-color: rgba(${defineColorBySeverity(props.$severity, true)}, 0.9);
+          border-color: rgba(
+            ${defineColorBySeverity(props.$severity, true)},
+            0.9
+          );
         }
       `}
 

@@ -1,7 +1,7 @@
 import { RightOutlined } from '@ant-design/icons';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 // import logoDark from 'assets/logo-dark.png';
-import logo from '@app/assets/logo.png';
+import logo from '@app/assets/polaris-logo.png';
 import logoText from '@app/assets/logo-text.png';
 import { useResponsive } from '@app/hooks/useResponsive';
 import React from 'react';
@@ -11,7 +11,10 @@ interface SiderLogoProps {
   isSiderCollapsed: boolean;
   toggleSider: () => void;
 }
-export const SiderLogo: React.FC<SiderLogoProps> = ({ isSiderCollapsed, toggleSider }) => {
+export const SiderLogo: React.FC<SiderLogoProps> = ({
+  isSiderCollapsed,
+  toggleSider,
+}) => {
   const { tabletOnly } = useResponsive();
 
   const theme = useAppSelector((state) => state.theme.theme);

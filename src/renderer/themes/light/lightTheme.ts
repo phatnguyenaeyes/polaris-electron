@@ -3,7 +3,7 @@ import { BASE_COLORS } from '../constants';
 import { ITheme } from '../types';
 
 export const lightColorsTheme: ITheme = {
-  primary: '#E21AFF',
+  primary: '#0B98AC',
   primary1: '#f5f5f5',
   primaryGradient: 'linear-gradient(211.49deg, #006CCF 15.89%, #00509A 48.97%)',
   light: '#C5D3E0',
@@ -34,7 +34,8 @@ export const lightColorsTheme: ITheme = {
   shadow: 'rgba(0, 0, 0, 0.07)',
   boxShadow: '0 2px 8px 0 rgba(0, 0, 0, 0.07)',
   boxShadowHover: '0 4px 16px 0 rgba(0, 0, 0, 0.2)',
-  boxShadowNft: '0px 16px 24px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04)',
+  boxShadowNft:
+    '0px 16px 24px rgba(0, 0, 0, 0.06), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04)',
   boxShadowNftSecondary:
     '0px 10px 20px rgba(0, 0, 0, 0.04), 0px 2px 6px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04)',
   dashboardMapBackground: '#EAF5FF',

@@ -6,10 +6,10 @@ export const Menu = styled(BaseMenu)`
   background: transparent;
   border-right: 0;
 
-  a {
+  /* a {
     display: block;
     width: 100%;
-  }
+  } */
 
   .ant-menu-title-content .menu-link {
     display: flex;
@@ -26,7 +26,7 @@ export const Menu = styled(BaseMenu)`
 
   .ant-menu-item,
   .ant-menu-submenu {
-    font-size: ${FONT_SIZE.xs};
+    /* font-size: ${FONT_SIZE.xs}; */
   }
 
   .ant-menu-item-icon {
@@ -39,8 +39,8 @@ export const Menu = styled(BaseMenu)`
   a,
   .ant-menu-item,
   .ant-menu-submenu {
-    color: var(--text-sider-secondary-color);
-    fill: var(--text-sider-secondary-color);
+    /* color: var(--text-sider-secondary-color); */
+    /* fill: var(--text-sider-secondary-color); */
   }
 
   .ant-menu-item:hover,
@@ -51,26 +51,26 @@ export const Menu = styled(BaseMenu)`
     a,
     .ant-menu-item-icon,
     .ant-menu-title-content {
-      color: var(--white);
-      fill: var(--white);
+      /* color: var(--white); */
+      /* fill: var(--white); */
     }
   }
 
   .ant-menu-submenu-selected {
     .ant-menu-submenu-title {
-      color: var(--text-sider-primary-color);
+      /* color: var(--text-sider-primary-color); */
 
       .ant-menu-submenu-expand-icon,
       .ant-menu-submenu-arrow,
       span[role='img'] {
-        color: var(--text-sider-primary-color);
-        fill: var(--text-sider-primary-color);
+        /* color: var(--text-sider-primary-color); */
+        /* fill: var(--text-sider-primary-color); */
       }
     }
   }
 
   .ant-menu-item-selected {
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
 
     &::after {
       border-right: transparent;
@@ -81,13 +81,11 @@ export const Menu = styled(BaseMenu)`
     span[role='img'],
     .ant-menu-item-icon,
     a {
-      color: var(--white);
-      fill: var(--white);
     }
   }
 
   .ant-menu-item-active,
   .ant-menu-submenu-active .ant-menu-submenu-title {
-    background-color: transparent !important;
+    /* background-color: transparent !important; */
   }
 `;

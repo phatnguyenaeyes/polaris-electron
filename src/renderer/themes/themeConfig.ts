@@ -9,22 +9,10 @@ export const themeConfig: ThemeConfig = {
     fontSize: 15,
   },
   components: {
-    Button: {
-      fontWeight: 600,
-    },
-    Card: {
-      colorBgContainer: '#FFFFFF',
-      headerBg: '#FAFAFA',
-    },
-    Table: {
-      headerBorderRadius: 6,
-    },
-    Layout: {
-      headerHeight: 60,
-    },
-    Modal: {
-      borderRadius: 12,
-      borderRadiusLG: 12,
-    },
+    Button: {},
+    Card: {},
+    Table: {},
+    Layout: {},
+    Modal: {},
   },
 };

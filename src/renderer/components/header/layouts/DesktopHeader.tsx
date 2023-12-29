@@ -2,7 +2,6 @@ import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import React from 'react';
 import * as S from '../Header.styles';
-import { HeaderFullscreen } from '../components/HeaderFullscreen/HeaderFullscreen';
 import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
 import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
 
@@ -46,9 +45,9 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
                 <NotificationsDropdown />
               </BaseCol> */}
 
-              <BaseCol>
+              {/* <BaseCol>
                 <SettingsDropdown />
-              </BaseCol>
+              </BaseCol> */}
             </BaseRow>
           </BaseCol>
 

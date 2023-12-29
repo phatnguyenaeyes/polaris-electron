@@ -26,7 +26,7 @@ export const FieldInfoContentTab = styled.div<{ $active?: boolean }>`
     props.$active &&
     css`
       ${FieldInfoContentTabItem} {
-        background-color: #e21aff;
+        background-color: #0b98ac;
       }
     `}
 `;

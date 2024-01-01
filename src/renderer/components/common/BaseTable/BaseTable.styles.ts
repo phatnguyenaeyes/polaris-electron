@@ -3,7 +3,39 @@ import { Table as AntdTable } from 'antd';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 
 export const Table = styled(AntdTable)`
-  .ant-table {
+  .ant-table-thead .ant-table-cell {
+    background-color: rgba(11, 152, 172, 0.21);
+    color: #000;
+    text-align: center;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+  }
+  .ant-table-thead .ant-table-cell::before {
+    background-color: transparent !important;
+  }
+  .ant-table-tbody .ant-table-cell {
+    color: #000;
+    text-align: center;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+  }
+  .ant-table-tbody .ant-table-cell:not(:last-child)::before {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 0;
+    width: 1px;
+    height: 1.6em;
+    background-color: #f0f0f0;
+    transform: translateY(-50%);
+    transition: background-color 0.2s;
+    content: '';
+    background-color: rgba(0, 0, 0, 0.17);
+  }
+  /* .ant-table {
     background-color: transparent;
     border: 1px solid rgb(255 255 255 / 0.11);
     border-radius: 12px;
@@ -33,11 +65,11 @@ export const Table = styled(AntdTable)`
     min-height: 1.25rem;
     margin-top: 0;
     border-radius: 0.1875rem;
-  }
+  } */
 
   /* stylelint-disable-next-line no-invalid-double-slash-comments */
   // Override default antd selector
-  &
+  /* &
     .ant-table-thead
     > tr
     > th:not(:last-child):not(.ant-table-selection-column):not(
@@ -96,5 +128,5 @@ export const Table = styled(AntdTable)`
     .ant-pagination-item a {
       color: var(--disabled-color);
     }
-  }
+  } */
 `;

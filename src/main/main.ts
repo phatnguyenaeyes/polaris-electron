@@ -126,10 +126,9 @@ const createLiveStreamWindow = (event: any, arg: any) => {
 
   childWindow = new BrowserWindow({
     title: 'Polaris LiveStream',
-    titleBarStyle: 'hidden',
-    width: 1080,
-    height: 1080,
-    center: true,
+    show: false,
+    width: 360,
+    height: 668,
     // parent: mainWindow as BrowserWindow | undefined,
     webPreferences: {
       nodeIntegration: true,
@@ -138,6 +137,32 @@ const createLiveStreamWindow = (event: any, arg: any) => {
   });
 
   childWindow.loadURL(link);
+
+  childWindow.on('ready-to-show', () => {
+    if (!childWindow) {
+      throw new Error('"childWindow" is not defined');
+    }
+    childWindow.movable = true;
+
+    if (process.env.START_MINIMIZED) {
+      childWindow.minimize();
+    } else {
+      childWindow.show();
+    }
+    childWindow.movable = true;
+
+    childWindow.setTitle('Poraris LiveStream');
+
+    childWindow.webContents.setZoomFactor(1);
+  });
+
+  childWindow.on('will-resize', (e) => {
+    e.preventDefault();
+  });
+
+  childWindow.on('closed', () => {
+    childWindow = null;
+  });
 };
 
 /**

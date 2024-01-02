@@ -38,7 +38,7 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
       mode="inline"
       defaultSelectedKeys={defaultSelectedKeys}
       defaultOpenKeys={defaultOpenKeys}
-      onClick={() => setCollapsed(true)}
+      // onClick={() => setCollapsed(true)}
       items={sidebarNavigation.map((nav) => {
         const isSubMenu = nav.children?.length;
 

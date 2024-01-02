@@ -16,19 +16,21 @@ export const ProfileDropdown: React.FC = () => {
   return user ? (
     <BasePopover content={<ProfileOverlay />} trigger="click">
       <S.ProfileDropdownHeader as={BaseRow} gutter={[10, 10]} align="middle">
-        <BaseCol>
-          <BaseAvatar
-            src="/default-avatar.jpg"
-            alt="User"
-            shape="circle"
-            size={40}
-          />
-        </BaseCol>
         {isTablet && (
           <BaseCol>
-            <span>{`${user.firstName}`}</span>
+            <span
+              style={{ fontWeight: 500, fontSize: 15 }}
+            >{`${user.firstName}`}</span>
           </BaseCol>
         )}
+        <BaseCol>
+          <BaseAvatar
+            src="/default-avatar.png"
+            alt="User"
+            shape="circle"
+            size={32}
+          />
+        </BaseCol>
       </S.ProfileDropdownHeader>
     </BasePopover>
   ) : null;

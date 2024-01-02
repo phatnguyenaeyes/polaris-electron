@@ -7,16 +7,8 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import React from 'react';
 import * as S from './MainSider/MainSider.styles';
 
-interface SiderLogoProps {
-  isSiderCollapsed: boolean;
-  toggleSider: () => void;
-}
-export const SiderLogo: React.FC<SiderLogoProps> = ({
-  isSiderCollapsed,
-  toggleSider,
-}) => {
-  const { tabletOnly } = useResponsive();
-
+interface SiderLogoProps {}
+export const SiderLogo: React.FC<SiderLogoProps> = ({}) => {
   const theme = useAppSelector((state) => state.theme.theme);
 
   // const img = theme === 'dark' ? logoDark : logo;
@@ -31,15 +23,6 @@ export const SiderLogo: React.FC<SiderLogoProps> = ({
           </S.BrandSpan>
         </S.SiderLogoLink>
       </S.SiderLogoCenter>
-      {tabletOnly && (
-        <S.CollapseButton
-          shape="circle"
-          size="small"
-          $isCollapsed={isSiderCollapsed}
-          icon={<RightOutlined rotate={isSiderCollapsed ? 0 : 180} />}
-          onClick={toggleSider}
-        />
-      )}
     </S.SiderLogoDiv>
   );
 };

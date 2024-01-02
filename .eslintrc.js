@@ -28,6 +28,7 @@ module.exports = {
     camelcase: 'off',
     'no-empty': 'off',
     'react-hooks/exhaustive-deps': 'off',
+    'react/prop-types': 'off',
   },
   parserOptions: {
     ecmaVersion: 2021,

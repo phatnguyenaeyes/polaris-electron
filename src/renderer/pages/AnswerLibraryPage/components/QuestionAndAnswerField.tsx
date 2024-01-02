@@ -1,7 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
 import TextField from '@app/components/formControl/TextField';
 import React, { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
@@ -10,6 +9,8 @@ import InputTagField from '@app/components/formControl/InputTagField';
 import AnswerFieldArray from './AnswerFieldArray';
 import GroupIdField from './GroupIdField';
 import { useTranslation } from 'react-i18next';
+import RadioGroupField from '@app/components/formControl/RadioGroupField';
+import SelectField from '@app/components/formControl/SelectField';
 
 interface Props {
   fieldName: string;
@@ -25,15 +26,11 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
     control,
   });
   return (
-    <div
-      style={{
-        marginBottom: '24px',
-      }}
-    >
-      <div className="d-flex">
-        <S.FieldInfoContentTabContainer className="justify-content-between w-100">
+    <div className="bg-white p-4 rounded-sm mb-4">
+      <div className="flex">
+        <S.FieldInfoContentTabContainer className="justify-between w-full">
           <div
-            className="d-flex"
+            className="flex"
             style={{ maxWidth: 'calc(100% - 210px)', overflowX: 'auto' }}
           >
             {fields.map((item, idx) => (
@@ -51,6 +48,7 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
             ))}
           </div>
           <S.FieldInfoContentTab
+            className="!mr-0"
             onClick={() => {
               append({
                 content: '',
@@ -82,20 +80,14 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
         </S.FieldInfoContentTabContainer>
       </div>
       {fields.map((field, index) => (
-        <div
+        <S.ActiveTabContainer
+          $active={index === activeTab}
           key={field.id}
           style={{
-            marginBottom: '25px',
-            display: index === activeTab ? 'block' : 'none',
+            marginBottom: '24px',
           }}
         >
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              marginBottom: '10px',
-            }}
-          >
+          <div className="pt-2 flex justify-end mb-4">
             <GroupIdField
               fieldIndex={index}
               fieldLength={fields.length}
@@ -110,42 +102,59 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
               }}
             />
           </div>
-          <BaseRow style={{ marginBottom: 24 }}>
-            {/* <BaseCol xs={12} lg={10}>
-                <RadioGroupField
-                  name={`${fieldName}.${index}.priority`}
-                  radioPerRow={2}
-                  options={[
-                    {
-                      label: `${t('POLARIS.LEVEL')} 1`,
-                      value: '1',
-                    },
-                    {
-                      label: `${t('POLARIS.LEVEL')} 2`,
-                      value: '2',
-                    },
-                    {
-                      label: `${t('POLARIS.LEVEL')} 3`,
-                      value: '3',
-                    },
-                  ]}
-                />
-              </BaseCol> */}
-            <BaseCol xs={12} lg={14}>
+          <BaseRow gutter={24} style={{ marginBottom: 24 }}>
+            <BaseCol xs={24} lg={12}>
+              <SelectField options={[]} name="123" label="Category" />
+            </BaseCol>
+            <BaseCol xs={24} lg={12}>
               <TextField
                 name={`${fieldName}.${index}.content`}
                 label={t('POLARIS.CONTENT')}
                 placeholder={t('POLARIS.PLEASE_INPUT_CONTENT')}
               />
-              <InputTagField
-                label={t('POLARIS.KEYWORD')}
-                name={`${fieldName}.${index}.keywords`}
-                placeHolder={t('POLARIS.INPUT_KEYWORD')}
+            </BaseCol>
+            <BaseCol xs={24} lg={12}>
+              <RadioGroupField
+                name={`${fieldName}.${index}.priority`}
+                options={[
+                  {
+                    label: `${t('POLARIS.LEVEL')} 1`,
+                    value: '1',
+                  },
+                  {
+                    label: `${t('POLARIS.LEVEL')} 2`,
+                    value: '2',
+                  },
+                  {
+                    label: `${t('POLARIS.LEVEL')} 3`,
+                    value: '3',
+                  },
+                ]}
+              />
+            </BaseCol>
+            <BaseCol xs={24} lg={12}>
+              <RadioGroupField
+                name={`${fieldName}.${index}.layout`}
+                label={t('POLARIS.LAYOUT_SAMPLE')}
+                style={{ width: '100%' }}
+                options={[
+                  {
+                    label: 'Flexible',
+                    value: 'layout-1',
+                  },
+                  {
+                    label: 'Fixed',
+                    value: 'layout-2',
+                  },
+                ]}
               />
             </BaseCol>
           </BaseRow>
-          <AnswerFieldArray fieldName={`${fieldName}.${index}.answerVideo`} />
-        </div>
+          <AnswerFieldArray
+            parrentFieldname={`${fieldName}.${index}`}
+            fieldName={`${fieldName}.${index}.answerVideo`}
+          />
+        </S.ActiveTabContainer>
       ))}
     </div>
   );

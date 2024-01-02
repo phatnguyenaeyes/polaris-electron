@@ -29,7 +29,6 @@ const VideoAnswerField: React.FC<Props> = ({ fieldName }) => {
         />
         <RadioGroupField
           name={`${fieldName}.videoAnswerOption`}
-          radioPerRow={2}
           options={[
             {
               label: 'Thêm chart',
@@ -52,7 +51,11 @@ const VideoAnswerField: React.FC<Props> = ({ fieldName }) => {
           />
         ) : null}
         {!showImageField ? (
-          <TextField label="Link Chart" name={`${fieldName}.videoAnswerLinkChart`} placeholder="Nhập đường dẫn" />
+          <TextField
+            label="Link Chart"
+            name={`${fieldName}.videoAnswerLinkChart`}
+            placeholder="Nhập đường dẫn"
+          />
         ) : null}
       </BaseCard>
     </div>

@@ -7,7 +7,6 @@ import { useAppSelector } from '@app/hooks/reduxHooks';
 import './App.css';
 import '@app/i18n';
 import { store } from '@app/store/store';
-import '@app/styles/scss/utils/utils.scss';
 import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';

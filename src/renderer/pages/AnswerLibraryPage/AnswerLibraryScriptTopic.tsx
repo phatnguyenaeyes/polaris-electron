@@ -476,7 +476,7 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
                         { label: 'USDJPY', value: 'USDJPY' },
                         // { label: 'USTEC', value: 'USTEC' },
                         // { label: 'USOIL', value: 'USOIL' },
-                        { label: 'BTCUSD', value: 'BTCUSD' },
+                        { label: 'BTCUSDT', value: 'BTCUSDT' },
                       ]}
                     />
                   </BaseCol>

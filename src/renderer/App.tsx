@@ -1,13 +1,8 @@
-import React from 'react';
-import {
-  MemoryRouter,
-  Routes,
-  Route,
-  Navigate,
-  BrowserRouter,
-} from 'react-router-dom';
+import React, { Suspense } from 'react';
+import { MemoryRouter, Navigate, useRoutes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import LoginPage from '@app/pages/LoginPage';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 import './App.css';
 import '@app/i18n';
@@ -17,9 +12,6 @@ import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/layouts/profile/ProfileLayout';
-import RequireAuth from '@app/components/router/RequireAuth';
-
-import UnrequireAuth from '@app/components/router/UnrequireAuth';
 
 // no lazy loading for auth pages to avoid flickering
 const AuthLayout = React.lazy(
@@ -109,73 +101,109 @@ const Notifications = withLoading(NotificationsPage);
 const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
 
-function ProtectedLayout() {
-  return (
-    <RequireAuth>
-      <MainLayout />
-    </RequireAuth>
-  );
-}
+const Routing = () => {
+  const token = useAppSelector((state) => state.auth.token);
+
+  const unAuthRoutes = {
+    path: '/auth',
+    element: !token ? <AuthLayoutFallback /> : <Navigate to="/" />,
+    children: [{ path: 'login', element: <LoginPage /> }],
+  };
+
+  const authRoutes = {
+    path: '/',
+    element: token ? <AuthLayout /> : <Navigate to="/auth/login" />,
+    children: [
+      {
+        path: '*',
+        element: <Navigate to={{ pathname: 'livestream' }} />,
+      },
+      {
+        path: '',
+        element: <Navigate to={{ pathname: 'livestream' }} />,
+      },
+      {
+        path: 'livestream',
+        element: <MainLayout />,
+        children: [
+          { path: '', element: <Livestream /> },
+          { path: 'create', element: <LivestreamCreate /> },
+          { path: 'edit/:id', element: <LivestreamEdit /> },
+          { path: 'view/:id', element: <LivestreamView /> },
+        ],
+      },
+      {
+        path: 'answer-library',
+        element: <MainLayout />,
+        children: [
+          { path: '', element: <AnswerLibrary /> },
+          { path: 'create', element: <AnswerLibraryCreate /> },
+          { path: 'edit/:slug', element: <AnswerLibraryEdit /> },
+          { path: 'script/:slug', element: <AnswerLibraryScript /> },
+          {
+            path: 'existing-topic/:slug/script/:scriptId',
+            element: <AnswerLibraryScriptTopic />,
+          },
+        ],
+      },
+      {
+        path: 'interactor',
+        element: <MainLayout />,
+        children: [{ path: '', element: <Interactor /> }],
+      },
+      {
+        path: 'live-config',
+        element: <MainLayout />,
+        children: [{ path: '', element: <LiveConfig /> }],
+      },
+      {
+        path: 'prompt-topic',
+        element: <MainLayout />,
+        children: [{ path: '', element: <PromptTopic /> }],
+      },
+      {
+        path: 'scenario',
+        element: <MainLayout />,
+        children: [
+          { path: '', element: <ScenarioConfig /> },
+          { path: 'create', element: <ScenarioConfigCreate /> },
+          { path: 'generate', element: <ScenarioConfigGenerate /> },
+          { path: ':id', element: <ScenarioConfigDetailGenerate /> },
+        ],
+      },
+      {
+        path: 'server-error',
+        element: <ServerError />,
+      },
+      {
+        path: 'profile',
+        element: <ProfileLayout />,
+        children: [
+          { path: 'personal-info', element: <PersonalInfo /> },
+          { path: 'notifications', element: <Notifications /> },
+        ],
+      },
+      {
+        path: '/*',
+        element: <Navigate to="/404" replace />,
+      },
+      {
+        path: 'logout',
+        element: <LogoutFallback />,
+      },
+    ],
+  };
+
+  const routes = useRoutes([authRoutes, unAuthRoutes]);
+  return <Suspense fallback={<p>Loading</p>}>{routes}</Suspense>;
+};
 
 export default function App() {
   return (
     <Provider store={store}>
       <ThemeContextProvider>
         <MemoryRouter>
-          <Routes>
-            <Route path={NFT_DASHBOARD_PATH} element={<ProtectedLayout />}>
-              <Route index element={<Navigate to="livestream" replace />} />
-              <Route path="livestream">
-                <Route path="" element={<Livestream />} />
-                <Route path="create" element={<LivestreamCreate />} />
-                <Route path="edit/:id" element={<LivestreamEdit />} />
-                <Route path="view/:id" element={<LivestreamView />} />
-              </Route>
-              <Route path="answer-library">
-                <Route path="" element={<AnswerLibrary />} />
-                <Route path="create" element={<AnswerLibraryCreate />} />
-                <Route path="edit/:slug" element={<AnswerLibraryEdit />} />
-                <Route path="script/:slug" element={<AnswerLibraryScript />} />
-                <Route
-                  path="existing-topic/:slug/script/:scriptId"
-                  element={<AnswerLibraryScriptTopic />}
-                />
-              </Route>
-              <Route path="interactor">
-                <Route path="" element={<Interactor />} />
-              </Route>
-              <Route path="live-config">
-                <Route path="" element={<LiveConfig />} />
-              </Route>
-              <Route path="prompt-topic">
-                <Route path="" element={<PromptTopic />} />
-              </Route>
-              <Route path="scenario">
-                <Route path="" element={<ScenarioConfig />} />
-                <Route path="create" element={<ScenarioConfigCreate />} />
-                <Route path="generate" element={<ScenarioConfigGenerate />} />
-                <Route path=":id" element={<ScenarioConfigDetailGenerate />} />
-              </Route>
-              <Route path="server-error" element={<ServerError />} />
-              <Route path="404" element={<Error404 />} />
-              <Route path="profile" element={<ProfileLayout />}>
-                <Route path="personal-info" element={<PersonalInfo />} />
-                <Route path="notifications" element={<Notifications />} />
-              </Route>
-            </Route>
-            <Route path="/auth" element={<AuthLayoutFallback />}>
-              <Route
-                path="login"
-                element={
-                  <UnrequireAuth>
-                    <LoginPage />
-                  </UnrequireAuth>
-                }
-              />
-            </Route>
-            <Route path="/logout" element={<LogoutFallback />} />
-            <Route path="/*" element={<Navigate to="/404" replace />} />
-          </Routes>
+          <Routing />
         </MemoryRouter>
       </ThemeContextProvider>
     </Provider>

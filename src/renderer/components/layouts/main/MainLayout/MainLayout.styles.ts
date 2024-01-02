@@ -4,6 +4,7 @@ import { BaseLayout } from '@app/components/common/BaseLayout/BaseLayout';
 
 export const LayoutMaster = styled(BaseLayout)`
   height: 100vh;
+  width: 100vw;
 `;
 
 export const LayoutMain = styled(BaseLayout)`

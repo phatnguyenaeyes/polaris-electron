@@ -39,39 +39,42 @@ const ProfileLayout: React.FC = () => {
   return (
     <>
       <PageTitle>{t('profile.title')}</PageTitle>
-      {!isTitleShown && (
-        <BaseButton
-          icon={<LeftOutlined />}
-          type="text"
-          onClick={() => navigate('/profile')}
-        >
-          {t('common.back')}
-        </BaseButton>
-      )}
 
-      <BaseRow gutter={[30, 30]}>
-        {isTitleShown && (
-          <BaseCol xs={24} md={24} xl={8}>
-            <ProfileCard>
-              <BaseRow gutter={[30, 30]}>
-                <BaseCol xs={24} md={12} xl={24}>
-                  <ProfileInfo profileData={user} />
-                </BaseCol>
-
-                <BaseCol xs={24} md={12} xl={24}>
-                  <ProfileNav />
-                </BaseCol>
-              </BaseRow>
-            </ProfileCard>
-          </BaseCol>
+      <div className="w-screen h-screen">
+        {!isTitleShown && (
+          <BaseButton
+            icon={<LeftOutlined />}
+            type="text"
+            onClick={() => navigate('/profile')}
+          >
+            {t('common.back')}
+          </BaseButton>
         )}
 
-        {isMenuShown && (
-          <BaseCol xs={24} md={24} xl={16}>
-            <Outlet />
-          </BaseCol>
-        )}
-      </BaseRow>
+        <BaseRow gutter={[30, 30]}>
+          {isTitleShown && (
+            <BaseCol xs={24} md={24} xl={8}>
+              <ProfileCard>
+                <BaseRow gutter={[30, 30]}>
+                  <BaseCol xs={24} md={12} xl={24}>
+                    <ProfileInfo profileData={user} />
+                  </BaseCol>
+
+                  <BaseCol xs={24} md={12} xl={24}>
+                    <ProfileNav />
+                  </BaseCol>
+                </BaseRow>
+              </ProfileCard>
+            </BaseCol>
+          )}
+
+          {isMenuShown && (
+            <BaseCol xs={24} md={24} xl={16}>
+              <Outlet />
+            </BaseCol>
+          )}
+        </BaseRow>
+      </div>
     </>
   );
 };

@@ -1,5 +1,8 @@
-import { BlockOutlined, SnippetsOutlined } from '@ant-design/icons';
-import { CustomIcon } from '@app/components/common/CustomIcon';
+import { BlockOutlined } from '@ant-design/icons';
+import { ArrangeSvgIcon } from '@app/components/svgIcon/arrange';
+import { FolderSvgIcon } from '@app/components/svgIcon/folder';
+import { InteractorSvgIcon } from '@app/components/svgIcon/interactor';
+import { MediaSvgIcon } from '@app/components/svgIcon/media';
 import React from 'react';
 
 export interface SidebarNavigationItem {
@@ -80,30 +83,46 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
     title: 'POLARIS.LIVES_TREAM_INTERACTION',
     key: 'livestream',
     url: '/livestream',
-    icon: <CustomIcon iconName="live" />,
+    icon: <MediaSvgIcon />,
   },
   {
     title: 'POLARIS.CONTENT_LIBRARY',
     key: 'answerLibrary',
     url: '/answer-library',
-    icon: <CustomIcon iconName="disk" />,
+    icon: <FolderSvgIcon />,
   },
   {
-    title: 'POLARIS.CONFIGURATION',
+    title: 'Interactor',
     key: 'liveConfig',
     url: '/live-config',
-    icon: <CustomIcon iconName="config" />,
+    icon: <InteractorSvgIcon />,
   },
   {
-    title: 'POLARIS.PROMPT_TOPIC',
+    title: 'Configuration',
     key: 'promptTopic',
     url: '/prompt-topic',
-    icon: <SnippetsOutlined />,
-  },
-  {
-    title: 'POLARIS.SCRIPT',
-    key: 'scenario',
-    url: '/scenario',
-    icon: <BlockOutlined />,
+    icon: <ArrangeSvgIcon />,
+    children: [
+      {
+        title: 'Livestream',
+        key: 'livestream',
+        url: '/live-config',
+      },
+      {
+        title: 'Scenario',
+        key: 'scenario',
+        url: '/prompt-topic',
+      },
+      {
+        title: 'Prompt topic',
+        key: 'promptTopic',
+        url: '/prompt-topic',
+      },
+      {
+        title: 'Categoty questions',
+        key: 'categoryQuestion',
+        url: '/prompt-topic',
+      },
+    ],
   },
 ];

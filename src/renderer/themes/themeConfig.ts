@@ -12,7 +12,9 @@ export const themeConfig: ThemeConfig = {
     Button: {},
     Card: {},
     Table: {},
-    Layout: {},
+    Layout: {
+      headerHeight: 76,
+    },
     Modal: {},
   },
 };

@@ -4,6 +4,8 @@ import { Overlay } from '../../../../common/Overlay/Overlay';
 import * as S from './MainSider.styles';
 import { SiderLogo } from '../SiderLogo';
 import SiderMenu from '../SiderMenu/SiderMenu';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { CollapseSvgIcon } from '@app/components/svgIcon/collapse';
 
 interface MainSiderProps {
   isCollapsed: boolean;
@@ -28,18 +30,34 @@ const MainSider: React.FC<MainSiderProps> = ({
     <>
       <S.Sider
         trigger={null}
-        collapsed={!isDesktop && isCollapsed}
-        collapsedWidth={tabletOnly ? 80 : 0}
+        collapsed={isCollapsed}
+        collapsedWidth={80}
         collapsible={isCollapsible}
         width={300}
         {...props}
       >
-        <SiderLogo isSiderCollapsed={isCollapsed} toggleSider={toggleSider} />
-        <S.SiderContent>
-          <SiderMenu setCollapsed={setCollapsed} />
-        </S.SiderContent>
+        <div>
+          <div>
+            <SiderLogo />
+            <S.SiderContent>
+              <SiderMenu setCollapsed={setCollapsed} />
+            </S.SiderContent>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full px-3 py-2">
+            <div className="flex justify-between items-center w-full">
+              {!isCollapsed && (
+                <span className="text-[#9A9A9A]">Collapse Sidebar</span>
+              )}
+              <BaseButton
+                type="link"
+                size="small"
+                icon={<CollapseSvgIcon />}
+                onClick={toggleSider}
+              />
+            </div>
+          </div>
+        </div>
       </S.Sider>
-      {mobileOnly && <Overlay onClick={toggleSider} show={!isCollapsed} />}
     </>
   );
 };

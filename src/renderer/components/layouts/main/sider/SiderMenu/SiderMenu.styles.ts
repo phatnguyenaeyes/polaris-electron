@@ -20,7 +20,20 @@ export const Menu = styled(BaseMenu)`
       height: 8px;
       margin-right: 16px;
       content: '';
-      background: rgb(255 255 255 / 0.36);
+      background-color: transparent;
+    }
+  }
+
+  .ant-menu-submenu {
+    .ant-menu-title-content {
+      /* padding-left: 16px; */
+      &::before {
+        width: 1px;
+        height: 8px;
+        margin-right: 16px;
+        content: '';
+        background-color: transparent;
+      }
     }
   }
 
@@ -87,5 +100,8 @@ export const Menu = styled(BaseMenu)`
   .ant-menu-item-active,
   .ant-menu-submenu-active .ant-menu-submenu-title {
     /* background-color: transparent !important; */
+  }
+  &.ant-menu-inline-collapsed .ant-menu-submenu .ant-menu-title-content {
+    opacity: 0;
   }
 `;

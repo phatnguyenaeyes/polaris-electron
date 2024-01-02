@@ -13,6 +13,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { showConfirm } from '@app/contexts/confirmation/ConfirmationProvider';
 
 const initialPagination = {
   total: 0,

@@ -12,6 +12,11 @@ import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import ProfileLayout from '@app/components/layouts/profile/ProfileLayout';
+import {
+  Alert,
+  Confirm,
+  ConfirmationServiceProvider,
+} from './contexts/confirmation/ConfirmationProvider';
 
 // no lazy loading for auth pages to avoid flickering
 const AuthLayout = React.lazy(
@@ -201,11 +206,15 @@ const Routing = () => {
 export default function App() {
   return (
     <Provider store={store}>
-      <ThemeContextProvider>
-        <MemoryRouter>
-          <Routing />
-        </MemoryRouter>
-      </ThemeContextProvider>
+      <ConfirmationServiceProvider>
+        <ThemeContextProvider>
+          <MemoryRouter>
+            <Confirm />
+            <Alert />
+            <Routing />
+          </MemoryRouter>
+        </ThemeContextProvider>
+      </ConfirmationServiceProvider>
     </Provider>
   );
 }

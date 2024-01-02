@@ -20,25 +20,45 @@ export const RemoveVideoIcon = styled.div`
   width: 100px;
 `;
 
+export const FieldInfoContentTabContainer = styled.div`
+  display: flex;
+  padding-top: 13px;
+`;
+
 export const FieldInfoContentTab = styled.div<{ $active?: boolean }>`
-  margin-bottom: 12px;
+  margin-right: 12px;
   ${(props) =>
     props.$active &&
     css`
       ${FieldInfoContentTabItem} {
-        background-color: #0b98ac;
+        background-color: #000;
+        color: #fff;
       }
     `}
 `;
 
-export const FieldInfoContentTabContainer = styled.div`
-  display: flex;
-`;
 export const FieldInfoContentTabItem = styled.div`
   min-width: 168px;
   padding: 12px;
   text-align: center;
   cursor: pointer;
-  background: #121212;
-  border-radius: 12px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #ededed;
+`;
+
+export const ActiveTabContainer = styled.div<{ $active?: boolean }>`
+  border: 2px solid transparent;
+  padding: 32px;
+  display: block;
+  ${(props) =>
+    props.$active &&
+    css`
+      border-color: #000;
+    `}
+  ${(props) =>
+    !props.$active &&
+    css`
+      display: none;
+    `}
 `;

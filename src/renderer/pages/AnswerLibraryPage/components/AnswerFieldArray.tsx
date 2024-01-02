@@ -16,9 +16,10 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   fieldName: string;
+  parrentFieldname: string;
 }
 
-const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
+const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
   const { t } = useTranslation();
   const { control, formState, watch } = useFormContext();
   const [activeTab, setActiveTab] = useState(0);
@@ -27,6 +28,8 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
     control,
   });
 
+  const videoLayoutValue = watch(`${parrentFieldname}.layout`);
+
   return (
     <div
       style={{
@@ -34,8 +37,6 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
       }}
     >
       {fields.map((item, index) => {
-        const videoLayoutValue = watch(`${fieldName}.${index}.videoLayout`);
-
         return (
           <div
             key={item.id}
@@ -43,34 +44,15 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
               marginBottom: '24px',
             }}
           >
-            <CardContent>
+            <div>
               <BaseRow>
-                <BaseCol xs={24} lg={24}>
-                  <RadioGroupField
-                    name={`${fieldName}.${index}.videoLayout`}
-                    label={t('POLARIS.LAYOUT_SAMPLE')}
-                    radioPerRow={2}
-                    style={{ width: '100%' }}
-                    options={[
-                      {
-                        label: 'Layout 1',
-                        value: 'layout-1',
-                      },
-                      {
-                        label: 'Layout 2',
-                        value: 'layout-2',
-                      },
-                    ]}
-                  />
-                </BaseCol>
                 <BaseCol xs={24} lg={24}>
                   {videoLayoutValue === 'layout-2' ? (
                     <TextField
                       name={`${fieldName}.${index}.answerContent`}
                       textArea
                     />
-                  ) : null}
-                  {videoLayoutValue === 'layout-1' ? (
+                  ) : (
                     <UploadListField
                       required
                       videoOnly
@@ -80,7 +62,7 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
                       name={`${fieldName}.${index}.video`}
                       maxLength={1}
                     />
-                  ) : null}
+                  )}
                   {fields.length > 1 ? (
                     <div
                       style={{
@@ -102,7 +84,7 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName }) => {
                   ) : null}
                 </BaseCol>
               </BaseRow>
-            </CardContent>
+            </div>
           </div>
         );
       })}

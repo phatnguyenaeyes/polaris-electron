@@ -17,7 +17,12 @@ const RadioGroupField: React.FC<BaseRadioGroupProps> = (props) => {
       name={props.name}
       control={control}
       render={({ field: { onChange, value }, fieldState }) => (
-        <RadioGroup {...internalProps} onChange={onChange} value={value} fieldError={fieldState.error} />
+        <RadioGroup
+          {...internalProps}
+          onChange={onChange}
+          value={value}
+          fieldError={fieldState.error}
+        />
       )}
     />
   );

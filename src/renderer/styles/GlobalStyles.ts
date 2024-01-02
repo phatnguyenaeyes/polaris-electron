@@ -367,8 +367,6 @@ margin-bottom: 21px;
 
 .radio-group__item {
   width: 100%;
-  height: 50px;
-  padding: 9px 12px 7px;
 
   &.ant-radio-button-wrapper:first-child:last-child {
     border-radius: 8px;
@@ -378,7 +376,6 @@ margin-bottom: 21px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 33px;
     margin-bottom: 0;
 
     .radio-group__label {

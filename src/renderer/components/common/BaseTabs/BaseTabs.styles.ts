@@ -11,12 +11,15 @@ export const StyledTabs = styled(AntdTabs)`
     .ant-tabs-tab {
       justify-content: center;
       min-width: 160px;
-      color: #ffffff80;
     }
 
     .ant-tabs-ink-bar {
-      background: ${() => `url(/light-underline.png)`};
-      background-color: transparent;
+      background: linear-gradient(
+        270deg,
+        #7dd8e5 0%,
+        #0b98ac 8.15%,
+        #7dd8e5 100%
+      );
       background-repeat: no-repeat, repeat;
     }
   }

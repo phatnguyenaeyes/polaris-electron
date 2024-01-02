@@ -1,4 +1,5 @@
 import { BaseRadio } from '@app/components/common/BaseRadio/BaseRadio';
+import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { Col, RadioChangeEvent, RadioGroupProps, Row, Space } from 'antd';
 import classNames from 'classnames';
 import _map from 'lodash/map';
@@ -22,22 +23,33 @@ export interface BaseRadioGroupProps extends BaseRadioProps {
   fieldError?: FieldError;
   label?: string;
   options?: SelectItem[];
-  radioPerRow?: number;
   name: string;
 }
 
 const RadioGroup: React.FC<BaseRadioGroupProps> = (props) => {
-  const { label, onChange, value, options, required, fieldError, radioPerRow, ...remaningProps } = props;
+  const {
+    label,
+    onChange,
+    value,
+    options,
+    required,
+    fieldError,
+    ...remaningProps
+  } = props;
   const isError = !!fieldError;
   const radioElements = _map(options, (option) => (
-    <Col span={24} lg={option.span || (radioPerRow ? Math.round(24 / radioPerRow) : 6)} key={option.value}>
-      <RadioButton className="radio-group__item" value={option.value}>
-        <p className="radio-group__content">
-          {option.icon && <b className="radio-group__icon  flex items-center">{option.icon}</b>}
-          <strong className="radio-group__label">{option.label}</strong>
-        </p>
-      </RadioButton>
-    </Col>
+    <RadioButton
+      className="radio-group__item"
+      key={option.value}
+      value={option.value}
+    >
+      <p className="radio-group__content">
+        {option.icon && (
+          <b className="radio-group__icon  flex items-center">{option.icon}</b>
+        )}
+        <strong className="radio-group__label">{option.label}</strong>
+      </p>
+    </RadioButton>
   ));
 
   return (
@@ -53,8 +65,14 @@ const RadioGroup: React.FC<BaseRadioGroupProps> = (props) => {
         </label>
         <div className="pb-2">
           <div>
-            <BaseRadio.Group {...remaningProps} buttonStyle="solid" onChange={onChange} value={value}>
-              <Row gutter={[24, 14]}>{radioElements}</Row>
+            <BaseRadio.Group
+              {...remaningProps}
+              style={{ width: '100%' }}
+              buttonStyle="solid"
+              onChange={onChange}
+              value={value}
+            >
+              <BaseSpace size="large">{radioElements}</BaseSpace>
             </BaseRadio.Group>
           </div>
           {isError && (

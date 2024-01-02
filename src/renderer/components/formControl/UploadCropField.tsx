@@ -123,8 +123,8 @@ const UploadCropBase: React.FC<UploadCropFieldProps> = (props) => {
     >
       {label && (
         <label className="inline-block mb-2 text-[13px]">
-          &#x2022; {label}
-          {required && <span className="text-error">*</span>}
+          {label}
+          {required && <span className="text-required">*</span>}
         </label>
       )}
       {helpText && <div className="form-item_help-text">{helpText}</div>}
@@ -176,7 +176,9 @@ const UploadCropBase: React.FC<UploadCropFieldProps> = (props) => {
       )}
       {hasError && (
         <div style={{ textAlign: 'left' }}>
-          <span style={{ color: '#ff4d4f' }}>{fieldError?.message}</span>
+          <span style={{ color: '#ff4d4f' }}>
+            {fieldError?.message as string}
+          </span>
         </div>
       )}
     </div>

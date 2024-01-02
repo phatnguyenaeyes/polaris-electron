@@ -14,7 +14,9 @@ export const StreamContentTopicDisplayType: React.FC<Props> = ({
   return (
     <div>
       <UploadCropField
-        label="Hình nền"
+        label="Attachment"
+        helpText="Allow .png,..."
+        required
         name={`${fieldName}.background`}
         maxLength={1}
       />

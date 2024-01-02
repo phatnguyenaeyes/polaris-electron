@@ -14,6 +14,7 @@ import { SimpleAudioPlayerButton } from '@app/components/audio-player/AudioPlaye
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { useParams } from 'react-router-dom';
 import { StreamContentTopicDisplayType } from './StreamContentTopicDisplayType';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 
 interface Props {
   fieldName: string;
@@ -32,7 +33,7 @@ const AudioGroup = ({ arr, slug }: { arr: any; slug: any }) => {
     });
   };
   return (
-    <div className="d-flex flex-row flex-wrap" style={{ gap: '20px' }}>
+    <div className="flex flex-row flex-wrap" style={{ gap: '20px' }}>
       {arr?.map((url: string, idx: number) => (
         <SimpleAudioPlayerButton
           key={idx}
@@ -56,15 +57,11 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
   });
 
   return (
-    <div
-      style={{
-        marginBottom: '24px',
-      }}
-    >
-      <div className="d-flex">
-        <S.FieldInfoContentTabContainer className="justify-content-between w-100">
+    <div>
+      <div className="flex">
+        <S.FieldInfoContentTabContainer className="justify-between w-full">
           <div
-            className="d-flex"
+            className="flex"
             style={{ maxWidth: 'calc(100% - 210px)', overflowX: 'auto' }}
           >
             {fields.map((item, idx) => (
@@ -91,17 +88,9 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
               setActiveTab(fields.length || 0);
             }}
           >
-            <S.FieldInfoContentTabItem>
-              <PlusOutlined className="" />
-              <span
-                style={{
-                  display: 'inline-block',
-                  paddingLeft: '8px',
-                }}
-              >
-                {t('POLARIS.ADD_CONTENT')}
-              </span>
-            </S.FieldInfoContentTabItem>
+            <BaseButton type="primary" icon={<PlusOutlined />} size="small">
+              <span>{t('POLARIS.ADD_CONTENT')}</span>
+            </BaseButton>
           </S.FieldInfoContentTab>
         </S.FieldInfoContentTabContainer>
       </div>
@@ -118,32 +107,13 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
         const layoutValue = watch(`${fieldName}.${index}.layout`);
 
         return (
-          <div
+          <S.ActiveTabContainer
+            $active={index === activeTab}
             key={item.id}
-            className="relative mb-3 rounded-[12px] p-[12px]"
             style={{
               marginBottom: '24px',
-              display: index === activeTab ? 'block' : 'none',
             }}
           >
-            {/*  */}
-            <RadioGroupField
-              name={`${fieldName}.${index}.layout`}
-              label={t('POLARIS.LAYOUT_SAMPLE')}
-              radioPerRow={2}
-              style={{ width: '50%' }}
-              options={[
-                {
-                  label: 'Layout 1',
-                  value: 'layout-1',
-                },
-                {
-                  label: 'Layout 2',
-                  value: 'layout-2',
-                },
-              ]}
-            />
-            {/*  */}
             <div
               style={{
                 display: 'flex',
@@ -165,16 +135,36 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
                 }}
               />
             </div>
-            {/*  */}
-            {/* <StreamContentTopicDisplayType
-              fieldName={`${fieldName}.${index}`}
-            /> */}
+            <BaseRow gutter={24}>
+              <BaseCol xs={24} lg={6}>
+                <StreamContentTopicDisplayType
+                  fieldName={`${fieldName}.${index}`}
+                />
+              </BaseCol>
+              <BaseCol xs={24} lg={18}>
+                <RadioGroupField
+                  name={`${fieldName}.${index}.layout`}
+                  label={t('POLARIS.LAYOUT_SAMPLE')}
+                  style={{ width: '50%' }}
+                  options={[
+                    {
+                      label: 'Flexible',
+                      value: 'layout-1',
+                    },
+                    {
+                      label: 'Fixed',
+                      value: 'layout-2',
+                    },
+                  ]}
+                />
+              </BaseCol>
+            </BaseRow>
             <div
               style={{
                 marginBottom: '24px',
               }}
             >
-              <CardContent>
+              <div>
                 <>
                   <BaseRow>
                     {layoutValue === 'layout-1' ? (
@@ -206,11 +196,11 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
                     <AudioGroup arr={vBee_audio_opening_arr} slug={slug} />
                   ) : null}
                 </>
-              </CardContent>
+              </div>
             </div>
             {/*  */}
             <div style={{ marginBottom: '24px' }}>
-              <CardContent>
+              <div>
                 <>
                   <BaseRow>
                     {layoutValue === 'layout-1' ? (
@@ -242,11 +232,11 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
                     <AudioGroup arr={vBee_audio_body_arr} slug={slug} />
                   ) : null}
                 </>
-              </CardContent>
+              </div>
             </div>
             {/*  */}
             <div>
-              <CardContent>
+              <div>
                 <>
                   <BaseRow>
                     {layoutValue === 'layout-1' ? (
@@ -278,9 +268,9 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
                     <AudioGroup arr={vBee_audio_conclusion_arr} slug={slug} />
                   ) : null}
                 </>
-              </CardContent>
+              </div>
             </div>
-          </div>
+          </S.ActiveTabContainer>
         );
       })}
     </div>

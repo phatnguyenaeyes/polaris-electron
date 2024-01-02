@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { MemoryRouter, Navigate, useRoutes } from 'react-router-dom';
+import { BrowserRouter, Navigate, useRoutes } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import LoginPage from '@app/pages/LoginPage';
 import { useAppSelector } from '@app/hooks/reduxHooks';
@@ -7,7 +7,6 @@ import { useAppSelector } from '@app/hooks/reduxHooks';
 import './App.css';
 import '@app/i18n';
 import { store } from '@app/store/store';
-import '@app/styles/scss/utils/utils.scss';
 import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
@@ -208,11 +207,11 @@ export default function App() {
     <Provider store={store}>
       <ConfirmationServiceProvider>
         <ThemeContextProvider>
-          <MemoryRouter>
+          <BrowserRouter>
             <Confirm />
             <Alert />
             <Routing />
-          </MemoryRouter>
+          </BrowserRouter>
         </ThemeContextProvider>
       </ConfirmationServiceProvider>
     </Provider>

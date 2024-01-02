@@ -28,16 +28,15 @@ const VideoContentField: React.FC = () => {
               <RadioGroupField
                 name="videoContentLayout"
                 label={t('POLARIS.LAYOUT_SAMPLE')}
-                radioPerRow={2}
                 style={{ width: '100%' }}
                 options={[
                   {
-                    label: 'Layout 1',
-                    value: 'layout1',
+                    label: 'Flexible',
+                    value: 'layout-1',
                   },
                   {
-                    label: 'Layout 2',
-                    value: 'layout2',
+                    label: 'Fixed',
+                    value: 'layout-2',
                   },
                 ]}
               />

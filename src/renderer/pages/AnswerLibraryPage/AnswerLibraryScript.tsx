@@ -396,7 +396,6 @@ const AnswerLibraryScriptPage: React.FC = () => {
                 {/* <RadioGroupField
                   name={`type`}
                   label="Select topic type"
-                  radioPerRow={2}
                   options={[
                     {
                       label: 'Chart',

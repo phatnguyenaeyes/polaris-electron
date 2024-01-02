@@ -1,22 +1,16 @@
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import TextField from '@app/components/formControl/TextField';
-import UploadListField from '@app/components/formControl/UploadListField';
 import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
 import { topicService } from '@app/services/topic.service';
 import { topicGroupService } from '@app/services/topicGroup.service';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 import * as yup from 'yup';
-import AnswerGroupField from './components/AnswerGroupField';
-import VideoLoopField from './components/VideoContentField';
-import VideoStartField from './components/VideoStartField';
-import VideoContentField from './components/VideoContentField';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
@@ -75,7 +69,7 @@ const AnswerLibraryEditPage: React.FC = () => {
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    // type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     contentTopic: yup
       .array()
@@ -157,16 +151,6 @@ const AnswerLibraryEditPage: React.FC = () => {
                   message: 'Please choose background',
                 });
               }
-              // errorBgFieldIdxs.forEach((eBgIdx) => {
-              //   const convertIdx = `${eBgIdx}`;
-              //   const fieldPath = `${this.path}[0].background`;
-              //   console.log('fieldPath:', fieldPath);
-              //   return this.createError({
-              //     path: fieldPath,
-              //     message: 'Please choose background',
-              //   });
-              // });
-              // return this.createError({ path: `${this.path}[0].background`, message: 'Please choose background' });
             }
           }
           return true;
@@ -174,37 +158,32 @@ const AnswerLibraryEditPage: React.FC = () => {
       )
       .min(1, 'Tối thiểu 1')
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    // answerGroup: yup
-    //   .array()
-    //   .of(
-    //     yup.object().shape({
-    //       _id: yup.string().nullable().notRequired(),
-    //       priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //       keywords: yup
-    //         .array()
-    //         .min(1, 'Tối thiểu 1')
-    //         .required(t('POLARIS.REQUIRED_ERROR_MSG'))
-    //         .nullable(),
-    //       answerVideo: yup
-    //         .array()
-    //         .of(
-    //           yup.object().shape({
-    //             video: yup.array().nullable(),
-    //             videoLayout: yup
-    //               .string()
-    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //             answerContent: yup
-    //               .string()
-    //               .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //           }),
-    //         )
-    //         .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
-    //         .required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    //     }),
-    //   )
-    //   .min(1, 'Tối thiểu 1')
-    //   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    answerGroup: yup
+      .array()
+      .of(
+        yup.object().shape({
+          _id: yup.string().nullable().notRequired(),
+          priority: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          content: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          answerVideo: yup
+            .array()
+            .of(
+              yup.object().shape({
+                video: yup.array().nullable(),
+                videoLayout: yup
+                  .string()
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+                answerContent: yup
+                  .string()
+                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+              }),
+            )
+            .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
+            .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+        }),
+      )
+      .min(1, 'Tối thiểu 1')
+      .required(t('POLARIS.REQUIRED_ERROR_MSG')),
   });
 
   const editFormMethods = useForm<EditTemplateFormInterface>({
@@ -299,6 +278,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             content: group.content,
             keywords: keywords,
             priority: `${group.priority || 1}`,
+            layout: `${group.layout || 'layout-2'}`,
             answerVideo: group.answers.map((answer: any, idx: number) => ({
               videoLayout: answer.layout,
               answerContent: answer.answer_content,
@@ -471,7 +451,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                     notificationController.success({
                       message: 'SUCCESS',
                       description: (
-                        <div className="d-flex flex-column">
+                        <div className="flex f">
                           {contentSuccess.map((success, idx) => (
                             <p key={idx}>{success}</p>
                           ))}
@@ -482,7 +462,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                     notificationController.error({
                       message: 'ERROR',
                       description: (
-                        <div className="d-flex flex-column">
+                        <div className="flex flex-col">
                           {contentErr.map((err, idx) => (
                             <p key={idx}>{err}ll</p>
                           ))}
@@ -540,7 +520,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                     notificationController.success({
                       message: 'SUCCESS',
                       description: (
-                        <div className="d-flex flex-column">
+                        <div className="flex flex-col">
                           {answerSuccess.map((success, idx) => (
                             <p key={idx}>{success}</p>
                           ))}
@@ -551,7 +531,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                     notificationController.error({
                       message: 'ERROR',
                       description: (
-                        <div className="d-flex flex-column">
+                        <div className="flex flex-col">
                           {answerErr.map((err, idx) => (
                             <p key={idx}>{err}</p>
                           ))}
@@ -588,50 +568,57 @@ const AnswerLibraryEditPage: React.FC = () => {
           >
             <BaseTabs>
               <BaseTabs.TabPane tab={`${t('POLARIS.INFORMATION')}`} key="1">
-                <BaseRow gutter={24}>
-                  <BaseCol xs={24} lg={12}>
-                    <TextField
-                      required={true}
-                      label={t('POLARIS.TOPIC')}
-                      name="topicName"
-                      placeholder={t('POLARIS.INSERT_TOPIC_NAME')}
-                    />
-                  </BaseCol>
-                  <BaseCol xs={24} lg={12}>
-                    <SelectField
-                      required
-                      label={t('POLARIS.CHART')}
-                      placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
-                      name="link_chart"
-                      options={[
-                        // { label: 'DXY', value: 'DXY' },
-                        { label: 'XAUUSD', value: 'XAUUSD' },
-                        { label: 'EURUSD', value: 'EURUSD' },
-                        { label: 'GBPUSD', value: 'GBPUSD' },
-                        { label: 'USDJPY', value: 'USDJPY' },
-                        // { label: 'USTEC', value: 'USTEC' },
-                        // { label: 'USOIL', value: 'USOIL' },
-                        { label: 'BTCUSDT', value: 'BTCUSDT' },
-                      ]}
-                    />
-                  </BaseCol>
-                </BaseRow>
-                {/* <RadioGroupField
-                  name={`type`}
-                  label="Select topic type"
-                  radioPerRow={2}
-                  options={[
-                    {
-                      label: 'Chart',
-                      value: 'CHART',
-                    },
-                    {
-                      label: 'Image',
-                      value: 'IMAGE',
-                    },
-                  ]}
-                /> */}
-                <div>
+                <div className="bg-white rounded-lg p-3 mb-3">
+                  <BaseRow gutter={24}>
+                    <BaseCol xs={24} lg={12}>
+                      <TextField
+                        required={true}
+                        label={t('POLARIS.TOPIC')}
+                        name="topicName"
+                        placeholder={t('POLARIS.INSERT_TOPIC_NAME')}
+                      />
+                    </BaseCol>
+                    <BaseCol xs={24} lg={12}>
+                      <RadioGroupField
+                        name={`type`}
+                        label="Content type"
+                        options={[
+                          {
+                            label: 'Chart',
+                            value: 'CHART',
+                          },
+                          {
+                            label: 'Image',
+                            value: 'IMAGE',
+                          },
+                        ]}
+                      />
+                    </BaseCol>
+                  </BaseRow>
+                  <BaseRow gutter={24}>
+                    <BaseCol xs={0} lg={12}></BaseCol>
+                    <BaseCol xs={0} lg={12}>
+                      <SelectField
+                        required
+                        label={t('POLARIS.CHART')}
+                        placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
+                        name="link_chart"
+                        options={[
+                          // { label: 'DXY', value: 'DXY' },
+                          { label: 'XAUUSD', value: 'XAUUSD' },
+                          { label: 'EURUSD', value: 'EURUSD' },
+                          { label: 'GBPUSD', value: 'GBPUSD' },
+                          { label: 'USDJPY', value: 'USDJPY' },
+                          // { label: 'USTEC', value: 'USTEC' },
+                          // { label: 'USOIL', value: 'USOIL' },
+                          { label: 'BTCUSDT', value: 'BTCUSDT' },
+                        ]}
+                      />
+                    </BaseCol>
+                  </BaseRow>
+                </div>
+
+                <div className="bg-white p-4 mb-4">
                   <LibraryContentField
                     fieldName="contentTopic"
                     onDelete={(contentTopicId) => {

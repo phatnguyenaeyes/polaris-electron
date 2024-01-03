@@ -95,6 +95,7 @@
     "PROMPT_TOPIC_LIST":"Danh sách nhóm chủ đề",
     "COMMAND":"Câu lệnh",
     "CREATE_PROMPT_TOPIC":"Tạo nhóm chủ đề",
+    "EDIT_PROMPT_TOPIC":"Chỉnh sửa nhóm chủ đề",
     "GROUP_NAME":"Tên nhóm",
     "INPUT_GROUP_NAME":"Nhập tên nhóm",
     "INPUT_COMMAND":"Nhập câu lệnh",
@@ -108,7 +109,11 @@
     "CREATE_NEW": "Tạo mới",
     "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Bạn muốn thêm kịch bản vào chủ đề nào?",
     "START_LIVE":"Start live",
-    "END_LIVE":"End live"
+    "END_LIVE":"End live",
+    "CONFIGURE_TOPIC_GROUP":"Cấu hình nhóm chủ đề",
+    "SEARCH_TOPICS":"Tìm kiếm chủ đề",
+    "PROMPT":"Lời nhắc",
+    "DATE_CREATED": "Ngày tạo"
   },
   "alerts": {
     "accept": "Accept",

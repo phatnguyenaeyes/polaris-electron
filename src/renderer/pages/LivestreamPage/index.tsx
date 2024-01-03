@@ -1,25 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import {
-  EyeOutlined,
-  PlusOutlined,
-  EyeTwoTone,
-  SearchOutlined,
-} from '@ant-design/icons';
+import { EyeTwoTone, SearchOutlined } from '@ant-design/icons';
 import { BasicTableRow, Pagination } from '@app/api/table.api';
-import { CardContent } from '@app/components/cardContent/CardContent';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
-import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSortPaginationTable } from '@app/components/common/BaseSortPaginationTable/BaseSortPaginationTable';
-import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { NewStreamIcon } from '@app/components/common/icons/StreamIcon';
-import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
-import * as PS from '@app/pages/Pages.styles';
+import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
+import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { liveSettingService } from '@app/services/liveSetting.service';
 import { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { showConfirm } from '@app/contexts/confirmation/ConfirmationProvider';
+import { useNavigate } from 'react-router-dom';
 
 import {
   EndLiveStatusIcon,
@@ -103,6 +94,7 @@ const LivestreamPage: React.FC = () => {
     {
       title: t('POLARIS.STATUS'),
       dataIndex: 'status',
+      width: 150,
       render: (_: any, record: any) => (
         <div className="flex flex-row items-center gap-x-[10px]">
           {record?.status === 'START' ? <StartLiveStatusIcon /> : null}

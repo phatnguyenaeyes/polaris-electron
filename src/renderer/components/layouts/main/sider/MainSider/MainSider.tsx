@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import { useResponsive } from '@app/hooks/useResponsive';
-import { Overlay } from '../../../../common/Overlay/Overlay';
-import * as S from './MainSider.styles';
-import { SiderLogo } from '../SiderLogo';
-import SiderMenu from '../SiderMenu/SiderMenu';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { CollapseSvgIcon } from '@app/components/svgIcon/collapse';
+import { useResponsive } from '@app/hooks/useResponsive';
+import React, { useMemo } from 'react';
+import { Overlay } from '../../../../common/Overlay/Overlay';
+import { SiderLogo } from '../SiderLogo';
+import SiderMenu from '../SiderMenu/SiderMenu';
+import * as S from './MainSider.styles';
 
 interface MainSiderProps {
   isCollapsed: boolean;
@@ -51,6 +51,9 @@ const MainSider: React.FC<MainSiderProps> = ({
               <BaseButton
                 type="link"
                 size="small"
+                className={`${
+                  isCollapsed ? 'rotate-180' : ''
+                } transition duration-500`}
                 icon={<CollapseSvgIcon />}
                 onClick={toggleSider}
               />

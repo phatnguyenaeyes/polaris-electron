@@ -394,8 +394,7 @@ margin-bottom: 21px;
 }
 
 .form-item_help-text {
-  font-size: 13px;
-  font-style: italic;
+  font-size: 15px;
   color: rgba(0, 0, 0, 0.38);
 }
 
@@ -433,4 +432,14 @@ margin-bottom: 21px;
   }
 }
 
+.upload-list-file-custom-doc { 
+  .ant-btn {
+    background: #858585;
+    border-radius: 18px;
+    color:white;
+    font-size: 17px;
+    font-weight: normal;
+    padding: 11px 15px;
+  }
+}
 `;

@@ -4,8 +4,10 @@ import React, { useEffect, useState } from 'react';
 import LiveConfigCreateForm from './LiveConfigCreateForm';
 import LiveConfigEditForm from './LiveConfigEditForm';
 import { LiveDevSettingsInterface } from './interface';
+import { useTranslation } from 'react-i18next';
 
 const LiveConfigPage: React.FC = () => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [liveDevSettings, setLiveDevSettings] =
     useState<LiveDevSettingsInterface>();
@@ -39,7 +41,6 @@ const LiveConfigPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>Live Config</PageTitle>
       {loading ? null : (
         <>
           {liveDevSettings ? (

@@ -80,7 +80,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
   //   icon: <TableOutlined />,
   // },
   {
-    title: 'POLARIS.LIVES_TREAM_INTERACTION',
+    title: 'POLARIS.LIVES_TREAM_MANAGEMENT',
     key: 'livestream',
     url: '/livestream',
     icon: <MediaSvgIcon />,

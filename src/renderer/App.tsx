@@ -10,6 +10,8 @@ import { store } from '@app/store/store';
 import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
+import EmptyLayout from '@app/components/layouts/EmptyLayout';
+
 import ProfileLayout from '@app/components/layouts/profile/ProfileLayout';
 import {
   Alert,
@@ -106,6 +108,7 @@ const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
 
 const Routing = () => {
+  console.log('🚀 ~ Routing ~ location:', location);
   const token = useAppSelector((state) => state.auth.token);
 
   const unAuthRoutes = {
@@ -131,9 +134,18 @@ const Routing = () => {
         element: <MainLayout />,
         children: [
           { path: '', element: <Livestream /> },
-          { path: 'create', element: <LivestreamCreate /> },
           { path: 'edit/:id', element: <LivestreamEdit /> },
           { path: 'view/:id', element: <LivestreamView /> },
+        ],
+      },
+      {
+        path: 'livestream/create',
+        element: <MainLayout />,
+        children: [
+          {
+            path: '',
+            element: <LivestreamCreate />,
+          },
         ],
       },
       {

@@ -347,7 +347,7 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
     >
       {label && (
         <label
-          className="inline-block mb-2 text-[13px]"
+          className="inline-block mb-2 text-[15px] text-black font-medium"
           style={{ display: 'block' }}
         >
           {label}
@@ -375,11 +375,14 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
         {(fileListProps || []).length < maxLength && (
           <>
             {listType !== 'text' ? (
-              <div>
-                <div>
+              <div className="text-[15px] font-normal">
+                {/* <div>
                   <PlusOutlined />
-                </div>
+                </div> */}
                 <div>{placeholder || 'Tải ảnh lên'}</div>
+                {suffixHelpText && (
+                  <div className="form-item_help-text ">{suffixHelpText}</div>
+                )}
               </div>
             ) : (
               <div>
@@ -391,9 +394,6 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
           </>
         )}
       </Upload>
-      {suffixHelpText && (
-        <div className="form-item_help-text">{suffixHelpText}</div>
-      )}
 
       {Boolean(visible) && !video && (
         <Image

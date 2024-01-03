@@ -5,12 +5,13 @@ import TextField from '@app/components/formControl/TextField';
 import React, { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import * as S from '../AnswerLibrary.styles';
-import InputTagField from '@app/components/formControl/InputTagField';
 import AnswerFieldArray from './AnswerFieldArray';
 import GroupIdField from './GroupIdField';
 import { useTranslation } from 'react-i18next';
 import RadioGroupField from '@app/components/formControl/RadioGroupField';
 import SelectField from '@app/components/formControl/SelectField';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import AutocompleteField from '@app/components/formControl/AutocompleteField';
 
 interface Props {
   fieldName: string;
@@ -47,35 +48,29 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
               </S.FieldInfoContentTab>
             ))}
           </div>
-          <S.FieldInfoContentTab
-            className="!mr-0"
-            onClick={() => {
-              append({
-                content: '',
-                priority: '1',
-                answerVideo: [
-                  {
-                    video: '',
-                    answerContent: '123',
-                    videoLayout: 'layout-2',
-                  },
-                ],
-              });
-              const nextFieldLength = fields.length + 1;
-              setActiveTab(nextFieldLength - 1 || 0);
-            }}
-          >
-            <S.FieldInfoContentTabItem>
-              <PlusOutlined className="" />
-              <span
-                style={{
-                  display: 'inline-block',
-                  paddingLeft: '8px',
-                }}
-              >
-                {t('POLARIS.ADD_KEYWORD_GROUP')}
-              </span>
-            </S.FieldInfoContentTabItem>
+          <S.FieldInfoContentTab className="!mr-0">
+            <BaseButton
+              type="primary"
+              icon={<PlusOutlined />}
+              size="small"
+              onClick={() => {
+                append({
+                  content: '',
+                  priority: '1',
+                  layout: 'FLEXIBLE',
+                  answerVideo: [
+                    {
+                      video: '',
+                      answerContent: '',
+                    },
+                  ],
+                });
+                const nextFieldLength = fields.length + 1;
+                setActiveTab(nextFieldLength - 1 || 0);
+              }}
+            >
+              <span>{t('POLARIS.ADD_KEYWORD_GROUP')}</span>
+            </BaseButton>
           </S.FieldInfoContentTab>
         </S.FieldInfoContentTabContainer>
       </div>
@@ -107,15 +102,26 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
               <SelectField options={[]} name="123" label="Category" />
             </BaseCol>
             <BaseCol xs={24} lg={12}>
-              <TextField
+              <AutocompleteField
                 name={`${fieldName}.${index}.content`}
-                label={t('POLARIS.CONTENT')}
+                options={[
+                  {
+                    label: 'Options 1',
+                    value: 'Options 1',
+                  },
+                  {
+                    label: 'Options 2',
+                    value: 'Options 2',
+                  },
+                ]}
+                label="Question"
                 placeholder={t('POLARIS.PLEASE_INPUT_CONTENT')}
               />
             </BaseCol>
             <BaseCol xs={24} lg={12}>
               <RadioGroupField
                 name={`${fieldName}.${index}.priority`}
+                label="Priority"
                 options={[
                   {
                     label: `${t('POLARIS.LEVEL')} 1`,
@@ -140,11 +146,11 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
                 options={[
                   {
                     label: 'Flexible',
-                    value: 'layout-1',
+                    value: 'FLEXIBLE',
                   },
                   {
                     label: 'Fixed',
-                    value: 'layout-2',
+                    value: 'FIXED',
                   },
                 ]}
               />

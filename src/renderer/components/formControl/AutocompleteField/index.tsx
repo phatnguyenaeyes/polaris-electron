@@ -1,29 +1,26 @@
 import {
-  BaseInput,
-  BaseInputProps,
-} from '@app/components/common/inputs/BaseInput/BaseInput';
+  BaseAutoComplete,
+  BaseAutoCompleteProps,
+} from '@app/components/common/BaseAutoComplete/BaseAutoComplete';
 import { Space } from 'antd';
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
-type BaseInputFieldProps = BaseInputProps;
-
-interface TextFieldBaseProps extends BaseInputFieldProps {
+interface AutoCompleteFieldBaseProps extends BaseAutoCompleteProps {
+  onChange?: (val: string) => void;
   handleChange?: (val: string) => void;
-  onChange?: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   fieldError?: FieldError;
+  required?: boolean;
   label?: string;
-  textArea?: boolean;
 }
 
-const TextFieldBase: React.FC<TextFieldBaseProps> = (props) => {
+const AutocompleteFieldBase: React.FC<AutoCompleteFieldBaseProps> = (props) => {
   const {
     label,
     placeholder,
     fieldError,
     disabled,
     maxLength,
-    textArea = false,
     required,
     onChange,
     handleChange,
@@ -31,33 +28,15 @@ const TextFieldBase: React.FC<TextFieldBaseProps> = (props) => {
   } = props;
   const isError = !!fieldError;
   const renderField = () => {
-    if (textArea) {
-      return (
-        <BaseInput.TextArea
-          onChange={(e) => {
-            onChange && onChange(e);
-            handleChange && handleChange(e.target.value);
-          }}
-          autoSize={{ minRows: 4, maxRows: 4 }}
-          disabled={disabled}
-          placeholder={placeholder}
-          className="form-text-field"
-          maxLength={maxLength}
-          value={remainingProps.value}
-        />
-      );
-    }
-
     return (
-      <BaseInput
-        {...(remainingProps as BaseInputFieldProps)}
+      <BaseAutoComplete
+        {...(remainingProps as BaseAutoCompleteProps)}
         disabled={disabled}
         placeholder={placeholder}
-        onChange={(e) => {
-          onChange && onChange(e);
-          handleChange && handleChange(e.target.value);
+        onChange={(val: string) => {
+          onChange && onChange(val);
+          handleChange && handleChange(val);
         }}
-        className="form-text-field"
         maxLength={maxLength}
       />
     );
@@ -82,7 +61,9 @@ const TextFieldBase: React.FC<TextFieldBaseProps> = (props) => {
   );
 };
 
-const TextField: React.FC<TextFieldBaseProps & { name: string }> = (props) => {
+const AutocompleteField: React.FC<
+  AutoCompleteFieldBaseProps & { name: string }
+> = (props) => {
   const {
     control,
     formState: { errors },
@@ -97,7 +78,7 @@ const TextField: React.FC<TextFieldBaseProps & { name: string }> = (props) => {
       name={props.name}
       control={control}
       render={({ field: { onChange, onBlur, value }, fieldState }) => (
-        <TextFieldBase
+        <AutocompleteFieldBase
           {...internalProps}
           onChange={onChange}
           onBlur={onBlur}
@@ -109,4 +90,4 @@ const TextField: React.FC<TextFieldBaseProps & { name: string }> = (props) => {
   );
 };
 
-export default TextField;
+export default AutocompleteField;

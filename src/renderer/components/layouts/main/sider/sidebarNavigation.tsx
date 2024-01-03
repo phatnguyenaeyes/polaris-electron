@@ -115,7 +115,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
       },
       {
         title: 'Prompt topic',
-        key: 'promptTopic',
+        key: 'promptTopic2',
         url: '/prompt-topic',
       },
       {

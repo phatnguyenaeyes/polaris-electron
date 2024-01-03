@@ -1,4 +1,8 @@
-import { Button, ButtonProps } from 'antd';
+import { ButtonContainer } from '@app/components/buttonContainer';
+import {
+  BaseButton,
+  BaseButtonProps,
+} from '@app/components/common/BaseButton/BaseButton';
 import React, { PropsWithChildren, forwardRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +11,9 @@ interface EditTemplateProps {
   title?: string;
   hideButton?: boolean;
   okBtnText?: string;
-  saveButtonProps?: ButtonProps;
+  saveButtonProps?: BaseButtonProps;
+  showCancel?: boolean;
+  onCancel?: () => void;
 }
 
 interface EditTemplateFormProps extends PropsWithChildren {
@@ -16,16 +22,21 @@ interface EditTemplateFormProps extends PropsWithChildren {
 
 interface CompoundedComponent {
   Form: React.ForwardRefExoticComponent<
-    EditTemplateFormProps & React.RefAttributes<HTMLFormElement> & React.FormHTMLAttributes<HTMLFormElement>
+    EditTemplateFormProps &
+      React.RefAttributes<HTMLFormElement> &
+      React.FormHTMLAttributes<HTMLFormElement>
   >;
 }
 
-export const EditTemplate: React.FC<EditTemplateProps & PropsWithChildren> & CompoundedComponent = ({
+export const EditTemplate: React.FC<EditTemplateProps & PropsWithChildren> &
+  CompoundedComponent = ({
   saveButtonProps,
   formId = 'basic-edit',
   title,
   okBtnText,
   hideButton = false,
+  showCancel = false,
+  onCancel,
   ...props
 }) => {
   const { t } = useTranslation();
@@ -34,17 +45,36 @@ export const EditTemplate: React.FC<EditTemplateProps & PropsWithChildren> & Com
     <div>
       {title && <div>{title || 'Edit'}</div>}
       <div>{props.children}</div>
-      {!hideButton ? (
-        <Button {...saveButtonProps} type="primary" htmlType="submit" form={formId}>
-          {okBtnText || t('POLARIS.UPDATE')}
-        </Button>
-      ) : null}
+      <ButtonContainer>
+        {showCancel && (
+          <BaseButton
+            htmlType="button"
+            onClick={onCancel}
+            loading={saveButtonProps?.loading}
+          >
+            Cancel
+          </BaseButton>
+        )}
+        {!hideButton ? (
+          <BaseButton
+            {...saveButtonProps}
+            type="primary"
+            htmlType="submit"
+            form={formId}
+          >
+            {okBtnText || t('POLARIS.UPDATE')}
+          </BaseButton>
+        ) : null}
+      </ButtonContainer>
     </div>
   );
 };
 
-const FormForwardRef = forwardRef<HTMLFormElement, EditTemplateFormProps>((props, ref) => {
-  return <form ref={ref} id="basic-edit" {...props} />;
-});
+// eslint-disable-next-line react/display-name
+const FormForwardRef = forwardRef<HTMLFormElement, EditTemplateFormProps>(
+  (props, ref) => {
+    return <form ref={ref} id="basic-edit" {...props} />;
+  },
+);
 
 EditTemplate.Form = FormForwardRef;

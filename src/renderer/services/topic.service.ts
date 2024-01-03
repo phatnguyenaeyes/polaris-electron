@@ -29,7 +29,10 @@ export const topicService = {
   update: (topicId: string, data: any): Promise<any> => {
     return httpClient.put(`/v1/topic/${topicId}`, data);
   },
-  updateTopicGroups: (topicId: string, data: { groups: string[] }): Promise<any> => {
+  updateTopicGroups: (
+    topicId: string,
+    data: { groups: string[] },
+  ): Promise<any> => {
     return httpClient.put(`/topic/update-group-for-topic/${topicId}`, data);
   },
 };

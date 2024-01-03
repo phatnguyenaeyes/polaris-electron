@@ -1,0 +1,21 @@
+export const TOPIC_STATUS = {
+  PUBLISH: 'PUBLISH',
+  UNPUBLISHED: 'UNPUBLISHED',
+  DELETE: 'DELETE',
+  DRAFT: 'DRAFT',
+};
+
+export const TOPIC_TYPE = {
+  IMAGE: 'IMAGE',
+  CHART: 'CHART',
+};
+
+export const CONTENT_TOPIC_TYPE = {
+  FLEXIBLE: 'FLEXIBLE',
+  FIXED: 'FIXED',
+};
+
+export const GROUP_CONTENT_TYPE = {
+  FLEXIBLE: 'FLEXIBLE',
+  FIXED: 'FIXED',
+};

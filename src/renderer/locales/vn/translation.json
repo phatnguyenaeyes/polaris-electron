@@ -2,7 +2,7 @@
   "POLARIS": {
     "GO":"ĐI",
     "CONTENT_LIBRARY": "Thư viện câu trả lời",
-    "LIVES_TREAM_INTERACTION":"Buổi Live", 
+    "LIVES_TREAM_MANAGEMENT":"Quản lý LiveStream", 
     "SCRIPT":"Kịch bản", 
     "LIVE_DATE":"Ngày live",
     "LIVE_STREAM_SESSIONS":"Danh sách buổi Live",
@@ -18,6 +18,7 @@
     "EDIT":"Chỉnh sửa",
     "START_A_NEW_LIVE_STREAM_SESSION":"Bắt đầu buổi live mới",
     "START_A_LIVE_STREAM_SESSION":"Bắt đầu buổi live",
+    "LIVE_SESSION_CONFIGURATION":"Cấu hình phiên live",
     "TOPIC": "Chủ đề",
     "CHOOSE_TOPIC": "Chọn chủ đề của bạn",
     "RETURN": "Quay lại",
@@ -105,7 +106,9 @@
     "CREATE_NEW_TOPIC_CONFIRM":"Bạn muốn tạo chủ đề mới?",
     "SAVE_TO_CREATED_TOPIC":"Lưu vào chủ đề đã tạo",
     "CREATE_NEW": "Tạo mới",
-    "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Bạn muốn thêm kịch bản vào chủ đề nào?"
+    "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Bạn muốn thêm kịch bản vào chủ đề nào?",
+    "START_LIVE":"Start live",
+    "END_LIVE":"End live"
   },
   "alerts": {
     "accept": "Accept",

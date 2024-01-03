@@ -2,7 +2,13 @@
 import { CloseSquareOutlined, FilterOutlined } from '@ant-design/icons';
 import { TablePaginationConfig, TableProps } from 'antd';
 import { FilterValue, SorterResult } from 'antd/lib/table/interface';
-import React, { MutableRefObject, ReactNode, useEffect, useRef, useState } from 'react';
+import React, {
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { BaseButton } from '../BaseButton/BaseButton';
 import { BasePagination } from '../BasePagination/BasePagination';
@@ -29,8 +35,17 @@ interface DataType {
 }
 
 // TODO make generic!
-export const BaseSortPaginationTable: React.FC<BaseTableProps<any>> = (props) => {
-  const { tableHandler, total, advanceFilter, hideAdvancedFilter = true, hideSearch = true, ...remainingProps } = props;
+export const BaseSortPaginationTable: React.FC<BaseTableProps<any>> = (
+  props,
+) => {
+  const {
+    tableHandler,
+    total,
+    advanceFilter,
+    hideAdvancedFilter = true,
+    hideSearch = true,
+    ...remainingProps
+  } = props;
   const { t } = useTranslation();
   const [visibleFilter, setVisibleFilter] = useState(false);
   const [tableParams, setTableParams] = useState<Record<string, any>>({});
@@ -85,7 +100,13 @@ export const BaseSortPaginationTable: React.FC<BaseTableProps<any>> = (props) =>
   return (
     <div>
       <S.TableSearchWrapper>
-        {!hideSearch && <S.TableSearchInput placeholder="Nhập vào từ khoá" allowClear onSearch={onSearch} />}
+        {!hideSearch && (
+          <S.TableSearchInput
+            placeholder="Nhập vào từ khoá"
+            allowClear
+            onSearch={onSearch}
+          />
+        )}
         {!hideAdvancedFilter && (
           <BaseButton
             style={{ height: '56px', marginLeft: '12px' }}
@@ -99,14 +120,22 @@ export const BaseSortPaginationTable: React.FC<BaseTableProps<any>> = (props) =>
         )}
       </S.TableSearchWrapper>
       <S.TableAdvancedFilterWrapper>
-        <ContentExpandable active={visibleFilter} onClose={() => setVisibleFilter(false)}>
+        <ContentExpandable
+          active={visibleFilter}
+          onClose={() => setVisibleFilter(false)}
+        >
           {/* <div className="header">
             <div>Lọc</div>
           </div> */}
           <div className="body">
             <FormProvider {...methods}>
-              <form name={'advance-search-form'} onSubmit={methods.handleSubmit(onSubmitForm)}>
-                <div style={{ marginBottom: '24px', paddingTop: '24px' }}>{advanceFilter}</div>
+              <form
+                name={'advance-search-form'}
+                onSubmit={methods.handleSubmit(onSubmitForm)}
+              >
+                <div style={{ marginBottom: '24px', paddingTop: '24px' }}>
+                  {advanceFilter}
+                </div>
                 <S.FilterButtonContainer>
                   <BaseButton
                     type="primary"
@@ -160,7 +189,15 @@ export const BaseSortPaginationTable: React.FC<BaseTableProps<any>> = (props) =>
   );
 };
 
-const ContentExpandable = ({ active, onClose, ...props }: { active: boolean; onClose: () => void; children: any }) => {
+const ContentExpandable = ({
+  active,
+  onClose,
+  ...props
+}: {
+  active: boolean;
+  onClose: () => void;
+  children: any;
+}) => {
   const content = useRef<HTMLDivElement>() as MutableRefObject<HTMLDivElement>;
   const [height, setHeight] = useState('0px');
 

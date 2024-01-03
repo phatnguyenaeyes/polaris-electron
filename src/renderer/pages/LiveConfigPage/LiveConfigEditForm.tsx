@@ -1,18 +1,16 @@
+import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import UploadListField from '@app/components/formControl/UploadListField';
-import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
 import { liveDevSettingService } from '@app/services/liveDevSetting.service';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Col, Row } from 'antd';
 import { isEmpty } from 'lodash';
-import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { LiveDevSettingsInterface } from './interface';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 
 const LiveConfigEditForm: React.FC<{
   liveDevSettings: LiveDevSettingsInterface;
@@ -21,6 +19,8 @@ const LiveConfigEditForm: React.FC<{
   const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [liveDevSettingId, setLiveDevSettingId] = useState<string>();
+  const uploadContainerRef = useRef<any>();
+  const [uploadFieldHeight, setUploadFieldHeight] = useState<string>();
 
   const formSchema = yup.object().shape({
     videoStart: yup
@@ -44,6 +44,11 @@ const LiveConfigEditForm: React.FC<{
       ],
     },
   });
+
+  useLayoutEffect(() => {
+    const heightt = uploadContainerRef?.current?.offsetHeight;
+    setUploadFieldHeight(heightt || 0);
+  }, []);
 
   useEffect(() => {
     if (!isEmpty(liveDevSettings)) {
@@ -111,46 +116,76 @@ const LiveConfigEditForm: React.FC<{
 
   return (
     <>
-      <PageTitle>{t('POLARIS.START_A_LIVE_STREAM_SESSION')}</PageTitle>
-      <BaseFormTitle>{t('POLARIS.START_A_LIVE_STREAM_SESSION')}</BaseFormTitle>
-      <EditTemplate
-        saveButtonProps={{
-          loading,
-        }}
-        okBtnText={t('POLARIS.START')}
-      >
-        <FormProvider {...formMethods}>
-          <EditTemplate.Form onSubmit={formMethods.handleSubmit(onSubmitForm)}>
-            <Row>
-              <Col lg={24} xs={24}>
-                <UploadListField
-                  showDownloadIcon
-                  required
-                  videoOnly
-                  placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                  label={t('POLARIS.OPENING_VIDEO')}
-                  suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                  name="videoStart"
-                  maxLength={1}
-                />
-              </Col>
-              <Col lg={24} xs={24}>
-                <UploadListField
-                  showDownloadIcon
-                  required
-                  videoOnly
-                  placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                  label={t('POLARIS.CONCLUSION_VIDEO')}
-                  suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                  name="videoEnd"
-                  maxLength={1}
-                />
-              </Col>
-            </Row>
-            <br />
-          </EditTemplate.Form>
-        </FormProvider>
-      </EditTemplate>
+      <PageTitle>{t('POLARIS.LIVE_SESSION_CONFIGURATION')}</PageTitle>
+
+      <div className="grid place-items-center h-[calc(100vh_-_130px)] w-full">
+        <div className="flex flex-col bg-white w-[921px] rounded-[32px] items-center justify-center h-[70vh] py-[36px] px-[48px] border-solid border-[1px] border-[rgba(57,_43,_43,_0.10)]">
+          <p className="self-start text-black text-[28px] font-normal">
+            {t('POLARIS.LIVE_SESSION_CONFIGURATION')}
+          </p>
+          {/*  */}
+          <form
+            id="basic-edit"
+            className="w-full h-full flex-1 flex flex-col gap-y-6 mt-[36px] mb-[20px]"
+            onSubmit={formMethods.handleSubmit(onSubmitForm)}
+          >
+            <FormProvider {...formMethods}>
+              <div
+                ref={uploadContainerRef}
+                className="grid grid-cols-2 self-center h-full w-full gap-x-[16px]"
+              >
+                <div
+                  className="upload-list-file-custom"
+                  style={{
+                    maxHeight: uploadFieldHeight,
+                    minHeight: uploadFieldHeight,
+                  }}
+                >
+                  <UploadListField
+                    showDownloadIcon
+                    required
+                    videoOnly
+                    placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                    label={t('POLARIS.START_LIVE')}
+                    suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                    name="videoStart"
+                    maxLength={1}
+                  />
+                </div>
+                <div
+                  className="upload-list-file-custom"
+                  style={{
+                    maxHeight: uploadFieldHeight,
+                    minHeight: uploadFieldHeight,
+                  }}
+                >
+                  <UploadListField
+                    showDownloadIcon
+                    required
+                    videoOnly
+                    placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                    label={t('POLARIS.END_LIVE')}
+                    suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                    name="videoEnd"
+                    maxLength={1}
+                  />
+                </div>
+              </div>
+              <br />
+            </FormProvider>
+            {/* update */}
+            <BaseButton
+              htmlType="submit"
+              type="primary"
+              className="w-1/2 self-center"
+              loading={loading}
+              onClick={() => {}}
+            >
+              {t('POLARIS.UPDATE')}
+            </BaseButton>
+          </form>
+        </div>
+      </div>
     </>
   );
 };

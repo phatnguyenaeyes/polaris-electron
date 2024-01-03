@@ -15,6 +15,7 @@ import * as yup from 'yup';
 import AnswerLibraryField from './components/AnswerLibraryField';
 import { LiveStreamFormInterface } from './livestream.interface';
 import { useTranslation } from 'react-i18next';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { confirm } = AntModal;
 
@@ -31,7 +32,10 @@ const LivestreamCreatePage: React.FC = () => {
       .array()
       .of(
         yup.object().shape({
-          topicId: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')).nullable(),
+          topicId: yup
+            .string()
+            .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+            .nullable(),
           // linkChart: yup
           //   .string()
           //   .matches(urlPattern, 'Điền vào đường dẫn hợp lệ')
@@ -59,9 +63,17 @@ const LivestreamCreatePage: React.FC = () => {
 
   const onCreateSubmitForm = async (values: LiveStreamFormInterface) => {
     try {
-      const { answerSubject, youtubeLink, twitterLink, telegramLink, commentFilterTime } = values;
+      const {
+        answerSubject,
+        youtubeLink,
+        twitterLink,
+        telegramLink,
+        commentFilterTime,
+      } = values;
       const answerSubjectFormated = answerSubject.map((item) => {
-        const durationLiveBySeconds = moment.duration(moment(item.durationLive).format('HH:mm:ss')).asSeconds();
+        const durationLiveBySeconds = moment
+          .duration(moment(item.durationLive).format('HH:mm:ss'))
+          .asSeconds();
         const { topicId, linkChart } = item;
         return {
           topicId,
@@ -93,10 +105,23 @@ const LivestreamCreatePage: React.FC = () => {
   return (
     <>
       <PageTitle>{t('POLARIS.START_A_NEW_LIVE_STREAM_SESSION')}</PageTitle>
-      <BaseFormTitle>{t('POLARIS.START_A_NEW_LIVE_STREAM_SESSION')}</BaseFormTitle>
+      <button
+        className="bg-transparent border-transparent text-black flex flex-row gap-x-[10px] items-center cursor-pointer"
+        onClick={() => {
+          navigate('/livesteam');
+        }}
+      >
+        <ArrowLeftOutlined />
+        <span>{t('POLARIS.BACK')}</span>
+      </button>
+      <BaseFormTitle>
+        {t('POLARIS.START_A_NEW_LIVE_STREAM_SESSION')}
+      </BaseFormTitle>
       <CreateTemplate okBtnText={t('POLARIS.CONTINUE')}>
         <FormProvider {...createFormMethods}>
-          <CreateTemplate.Form onSubmit={createFormMethods.handleSubmit(onCreateSubmitForm)}>
+          <CreateTemplate.Form
+            onSubmit={createFormMethods.handleSubmit(onCreateSubmitForm)}
+          >
             <Row>
               <Col span={24}>
                 <AnswerLibraryField fieldName="answerSubject" />

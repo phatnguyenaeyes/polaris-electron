@@ -396,10 +396,41 @@ margin-bottom: 21px;
 .form-item_help-text {
   font-size: 13px;
   font-style: italic;
-  color: #5F656C;
+  color: rgba(0, 0, 0, 0.38);
 }
 
 .text-required {
   color: #ff4d4f;
 }
+
+.upload-list-file-custom {
+  .upload-list-field {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    max-height: inherit;
+    min-height: inherit;
+
+  }
+  .ant-upload-list-item-container {
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .ant-upload-wrapper {
+    flex: 1 0 100%;
+    max-height: inherit;
+    min-height: inherit;
+
+    .ant-upload-list {
+      height: 100%;
+      width: 100%;
+      .ant-upload-select {
+        height: 100% !important;
+        width: 100% !important;
+      }
+    }
+  }
+}
+
 `;

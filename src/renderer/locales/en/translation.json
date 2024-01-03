@@ -2,7 +2,7 @@
   "POLARIS": {
     "GO":"Go",
     "CONTENT_LIBRARY": "Content Library",
-    "LIVES_TREAM_INTERACTION":"Live-Stream Interaction",
+    "LIVES_TREAM_MANAGEMENT":"Livestream Management",
     "SCRIPT":"Script",
     "LIVE_DATE":"Live Date",
     "LIVE_STREAM_SESSIONS":"Live Stream Sessions",
@@ -18,6 +18,7 @@
     "EDIT":"Edit",
     "START_A_NEW_LIVE_STREAM_SESSION":"Start a new livestream session",
     "START_A_LIVE_STREAM_SESSION":"Start a livestream session",
+    "LIVE_SESSION_CONFIGURATION":"Live session configuration",
     "TOPIC": "Topic",
     "CHOOSE_TOPIC": "Choose Topic",
     "RETURN": "Return",
@@ -73,7 +74,7 @@
     "QUESTION_CONTENT":"Question content",
     "CANCEL":"Cancel",
     "UPLOAD_VIDEO":"Upload video",
-    "FORMAT_SUGGESTION_01":"Format: .mp4, .mov, or avi file.",
+    "FORMAT_SUGGESTION_01":"File format .mp4, .mov, .avi",
     "GROUP":"Group",
     "ADD_KEYWORD_GROUP":"Add Q&A",
     "LEVEL": "Level",
@@ -105,7 +106,9 @@
     "CREATE_NEW_TOPIC_CONFIRM":"Do you want to create a new topic?",
     "SAVE_TO_CREATED_TOPIC":"Save to the created topic",
     "CREATE_NEW": "Create new",
-    "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Which topic do you want to add this script?"
+    "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Which topic do you want to add this script?",
+    "START_LIVE":"Start live",
+    "END_LIVE":"End live"
   },
   "alerts": {
     "accept": "Accept",

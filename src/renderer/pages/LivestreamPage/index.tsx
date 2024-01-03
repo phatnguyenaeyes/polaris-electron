@@ -1,19 +1,30 @@
-import { EyeOutlined, PlusOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import {
+  EyeOutlined,
+  PlusOutlined,
+  EyeTwoTone,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { BasicTableRow, Pagination } from '@app/api/table.api';
 import { CardContent } from '@app/components/cardContent/CardContent';
 import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
+import { BaseInput } from '@app/components/common/inputs/BaseInput/BaseInput';
 import { BaseSortPaginationTable } from '@app/components/common/BaseSortPaginationTable/BaseSortPaginationTable';
-import { BaseSpace } from '@app/components/common/BaseSpace/BaseSpace';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
+import { NewStreamIcon } from '@app/components/common/icons/StreamIcon';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
 import * as PS from '@app/pages/Pages.styles';
 import { liveSettingService } from '@app/services/liveSetting.service';
 import { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
-import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { showConfirm } from '@app/contexts/confirmation/ConfirmationProvider';
+
+import {
+  EndLiveStatusIcon,
+  StartLiveStatusIcon,
+} from '@app/components/common/icons/LiveStatusIcon';
 
 const initialPagination = {
   total: 0,
@@ -61,11 +72,9 @@ const LivestreamPage: React.FC = () => {
 
   const columns: ColumnsType<BasicTableRow> = [
     {
-      title: t('POLARIS.LIVE_DATE'),
-      dataIndex: 'create_at',
-      render: (create_at: string) => (
-        <span>{moment(create_at).format('DD-MM-YYYY HH:mm:ss')}</span>
-      ),
+      title: 'Livestream name',
+      dataIndex: 'name',
+      render: (_: any, record: any) => <span>{record?.name || ''}</span>,
     },
     {
       title: t('POLARIS.PLATFORM'),
@@ -85,26 +94,59 @@ const LivestreamPage: React.FC = () => {
       },
     },
     {
+      title: t('POLARIS.LIVE_DATE'),
+      dataIndex: 'create_at',
+      render: (_: any, record: any) => (
+        <span>{moment(record?.create_at).format('hh:mm A DD/MM/YYYY')}</span>
+      ),
+    },
+    {
+      title: t('POLARIS.STATUS'),
+      dataIndex: 'status',
+      render: (_: any, record: any) => (
+        <div className="flex flex-row items-center gap-x-[10px]">
+          {record?.status === 'START' ? <StartLiveStatusIcon /> : null}
+          {record?.status === 'START' ? (
+            <span className="text-[#38BA18]">Đang live</span>
+          ) : null}
+
+          {record?.status === 'END' ? <EndLiveStatusIcon /> : null}
+          {record?.status === 'END' ? (
+            <span className="text-[#FF5A53]">Đã kết thúc</span>
+          ) : null}
+        </div>
+      ),
+    },
+    {
+      title: 'Script duration',
+      dataIndex: 'create_at',
+      render: (_: any, record: any) => <span>{record?.scriptDuration}</span>,
+    },
+    {
+      title: 'Live duration',
+      dataIndex: 'create_at',
+      render: (_: any, record: any) => <span>{record?.liveDuration}</span>,
+    },
+    {
       title: t('POLARIS.ACTION'),
       dataIndex: 'actions',
       width: '10%',
       render: (_, record: any) => {
         return (
-          <BaseSpace>
+          <div>
             <BaseButton
               type="text"
               size="small"
-              icon={<EyeOutlined />}
+              icon={<EyeTwoTone twoToneColor="#0085FF" />}
               onClick={() => {
                 navigate(`/livestream/view/${record._id}`);
               }}
             >
-              {t('POLARIS.VIEW_DETAIL')}
+              <span className="underline text-[#0085FF] text-[17px] font-normal">
+                {t('POLARIS.VIEW_DETAIL')}
+              </span>
             </BaseButton>
-            {/* <BaseButton type="default" danger>
-              {t('tables.delete')}
-            </BaseButton> */}
-          </BaseSpace>
+          </div>
         );
       },
     },
@@ -113,19 +155,26 @@ const LivestreamPage: React.FC = () => {
   return (
     <>
       <PageTitle>{t('POLARIS.LIVE_STREAM_SESSIONS')}</PageTitle>
-      <CardContent>
-        <PS.PageHeaderWrapper>
-          <BaseFormTitle>{t('POLARIS.LIVE_STREAM_SESSIONS')}</BaseFormTitle>
+      <div>
+        <div className="mt-[4px] flex flex-row justify-end gap-x-[23px]">
+          <BaseInput
+            prefix={<SearchOutlined />}
+            className="w-[477px] !bg-white"
+            placeholder="Search Answer"
+            bordered={false}
+          />
           <BaseButton
             htmlType="button"
             type="primary"
-            shape="circle"
-            icon={<PlusOutlined />}
+            icon={<NewStreamIcon />}
             onClick={() => {
               navigate('/livestream/create');
             }}
-          />
-        </PS.PageHeaderWrapper>
+            className="rounded-[12px]"
+          >
+            New Stream
+          </BaseButton>
+        </div>
         <div>
           <BaseSortPaginationTable
             columns={columns}
@@ -139,7 +188,7 @@ const LivestreamPage: React.FC = () => {
             hideAdvancedFilter={true}
           />
         </div>
-      </CardContent>
+      </div>
     </>
   );
 };

@@ -1,16 +1,16 @@
-import React, { Suspense } from 'react';
-import { BrowserRouter, Navigate, useRoutes } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import LoginPage from '@app/pages/LoginPage';
 import { useAppSelector } from '@app/hooks/reduxHooks';
+import LoginPage from '@app/pages/LoginPage';
+import React, { Suspense } from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Navigate, useRoutes } from 'react-router-dom';
 
-import './App.css';
-import '@app/i18n';
-import { store } from '@app/store/store';
+import EmptyLayout from '@app/components/layouts/EmptyLayout';
+import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import { ThemeContextProvider } from '@app/contexts/ThemeContext';
 import { withLoading } from '@app/hocs/withLoading.hoc';
-import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
-import EmptyLayout from '@app/components/layouts/EmptyLayout';
+import '@app/i18n';
+import { store } from '@app/store/store';
+import './App.css';
 
 import ProfileLayout from '@app/components/layouts/profile/ProfileLayout';
 import {
@@ -108,7 +108,7 @@ const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
 
 const Routing = () => {
-  console.log('🚀 ~ Routing ~ location:', location);
+  console.log('🚀 ~ Routing ~ location:', location?.href);
   const token = useAppSelector((state) => state.auth.token);
 
   const unAuthRoutes = {
@@ -186,6 +186,10 @@ const Routing = () => {
           { path: 'generate', element: <ScenarioConfigGenerate /> },
           { path: ':id', element: <ScenarioConfigDetailGenerate /> },
         ],
+      },
+      {
+        path: 'category-questions',
+        element: <MainLayout />,
       },
       {
         path: 'server-error',

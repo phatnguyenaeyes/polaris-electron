@@ -1,15 +1,15 @@
 import { PlusOutlined, UploadOutlined } from '@ant-design/icons';
-import { Image, Modal, Upload, Button, message } from 'antd';
-import classNames from 'classnames';
-import { useMemo, useState } from 'react';
 import { TYPE_DOC_UPLOAD } from '@app/constants/upload';
 import { parseListImage } from '@app/utils/utils';
+import { Button, Image, message, Modal, Upload } from 'antd';
 import {
   RcFile,
   UploadChangeParam,
   UploadFile,
   UploadProps,
 } from 'antd/lib/upload';
+import classNames from 'classnames';
+import { useMemo, useState } from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
 type BaseUploadProps = Omit<UploadProps, 'onChange'>;
@@ -389,6 +389,9 @@ const UploadListBase: React.FC<UploadListFieldProps> = (props) => {
                 <Button icon={<UploadOutlined />} disabled={disabled}>
                   {placeholder || 'Tải file lên'}
                 </Button>
+                {suffixHelpText && (
+                  <div className="form-item_help-text ">{suffixHelpText}</div>
+                )}
               </div>
             )}
           </>

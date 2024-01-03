@@ -95,9 +95,10 @@
     "PROMPT_TOPIC_LIST":"Prompt Topic List",
     "COMMAND":"Command",
     "CREATE_PROMPT_TOPIC":"Create prompt topic",
+    "EDIT_PROMPT_TOPIC":"Edit prompt topic",
     "GROUP_NAME":"Group name",
-    "INPUT_GROUP_NAME":"Input group name",
-    "INPUT_COMMAND":"Input command",
+    "INPUT_GROUP_NAME":"Enter topic group name",
+    "INPUT_COMMAND":"Enter script creation command",
     "DOC_SAMPLE":"Document sample",
     "UPLOAD_DOCUMENT":"Upload document",
     "EDIT_ANSWER": "Edit answer",
@@ -108,7 +109,11 @@
     "CREATE_NEW": "Create new",
     "TOPIC_TO_ADD_SCRIPT_CONFIRM":"Which topic do you want to add this script?",
     "START_LIVE":"Start live",
-    "END_LIVE":"End live"
+    "END_LIVE":"End live",
+    "CONFIGURE_TOPIC_GROUP":"Configure topic group",
+    "SEARCH_TOPICS":"Search topics",
+    "PROMPT":"Prompt",
+    "DATE_CREATED": "Date created"
   },
   "alerts": {
     "accept": "Accept",

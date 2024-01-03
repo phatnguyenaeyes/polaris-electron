@@ -93,25 +93,25 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
   },
   {
     title: 'Interactor',
-    key: 'liveConfig',
-    url: '/live-config',
+    key: 'interactor',
+    url: '/interactor',
     icon: <InteractorSvgIcon />,
   },
   {
     title: 'Configuration',
-    key: 'promptTopic',
+    key: 'configuration',
     url: '/prompt-topic',
     icon: <ArrangeSvgIcon />,
     children: [
       {
         title: 'Livestream',
-        key: 'livestream',
+        key: 'live-config',
         url: '/live-config',
       },
       {
         title: 'Scenario',
         key: 'scenario',
-        url: '/prompt-topic',
+        url: '/scenario',
       },
       {
         title: 'Prompt topic',
@@ -121,7 +121,7 @@ export const sidebarNavigation: SidebarNavigationItem[] = [
       {
         title: 'Categoty questions',
         key: 'categoryQuestion',
-        url: '/prompt-topic',
+        url: '/category-questions',
       },
     ],
   },

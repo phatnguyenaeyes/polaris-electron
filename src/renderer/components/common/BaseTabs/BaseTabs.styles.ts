@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { Tabs as AntdTabs } from 'antd';
-import { BASE_NAME_PUBLIC } from '@app/config/config';
 
 export const StyledTabs = styled(AntdTabs)`
   .ant-tabs-nav {
@@ -26,5 +25,27 @@ export const StyledTabs = styled(AntdTabs)`
 
   .ant-tabs-tab.ant-tabs-tab-disabled {
     color: var(--disabled-color);
+  }
+  &.ant-tabs-card {
+    .ant-tabs-nav-list {
+      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.04);
+      padding: 4px;
+      height: 52px;
+      .ant-tabs-tab {
+        border-radius: 10px;
+        border: none;
+        background-color: transparent;
+        .ant-tabs-tab-btn {
+          color: rgba(0, 0, 0, 0.28);
+        }
+        &-active {
+          background: #fff;
+          .ant-tabs-tab-btn {
+            color: #04111d;
+          }
+        }
+      }
+    }
   }
 `;

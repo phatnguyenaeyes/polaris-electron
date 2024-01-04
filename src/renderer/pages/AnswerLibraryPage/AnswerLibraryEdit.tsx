@@ -1,6 +1,5 @@
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
-import TextField from '@app/components/formControl/TextField';
 import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
@@ -9,16 +8,13 @@ import { topicGroupService } from '@app/services/topicGroup.service';
 import { yupResolver } from '@hookform/resolvers/yup';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { useTranslation } from 'react-i18next';
-import SelectField from '@app/components/formControl/SelectField';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
+import { TopicInfoField } from './components/TopicInfoField';
 
 interface EditTemplateFormInterface {
   topicName: string;
@@ -27,6 +23,7 @@ interface EditTemplateFormInterface {
   videoEndLayout: string;
   libraryContent: any[];
   link_chart: string;
+  chart_symbol: string;
   type?: string;
   videoLoopOption: string;
   contentTopic?: {
@@ -44,12 +41,14 @@ interface EditTemplateFormInterface {
     background?: any;
     chart_symbol?: string;
     link_chart?: string;
+    type?: string;
   }[];
   answerGroup?: {
     _id: string;
     priority: string;
     content: string;
     keywords: string[];
+    layout: string;
     answerVideo: {
       video: any;
       videoLayout: string;
@@ -66,20 +65,44 @@ const AnswerLibraryEditPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [loadingUploadArray, setLoadingUploadArray] = useState(false);
   const [topicId, setTopicId] = useState<string>();
+  const navigate = useNavigate();
 
   const editFormSchema = yup.object().shape({
     topicName: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
     type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
-    link_chart: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+    chart_symbol: yup.string().when('layout', (layout, schema) => {
+      if (layout === 'layout-2') {
+        return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+      }
+      return schema.nullable().notRequired();
+    }),
     contentTopic: yup
       .array()
       .of(
         yup.object().shape({
+          type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          url: yup.string().when('type', (type, schema) => {
+            if (type === 'ai') {
+              return schema
+                .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+                .matches(
+                  /^(https?):\/\/[^\s$.?#].[^\s]*$/,
+                  'Please enter valid url',
+                );
+            }
+            return schema.notRequired();
+          }),
+          prompt: yup.string().when('type', (type, schema) => {
+            if (type === 'ai') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema.notRequired();
+          }),
           video_opening: yup
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-1') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -87,7 +110,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_opening: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-2') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -96,7 +119,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-1') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -104,7 +127,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_body: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-2') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -113,7 +136,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-1') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -121,7 +144,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_conclusion: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-2') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -169,14 +192,59 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .of(
               yup.object().shape({
-                video: yup.array().nullable(),
-                videoLayout: yup
-                  .string()
-                  .required(t('POLARIS.REQUIRED_ERROR_MSG')),
+                video: yup.array(),
+                // .test(
+                //   'requireVideo',
+                //   'Please choose video.',
+                //   function validateBg(currentValue) {
+                //     console.log('this.path:', this.path);
+                //     console.log('this:', this);
+
+                //     if (
+                //       this.parent.layout === 'FIXED' &&
+                //       (!currentValue ||
+                //         (currentValue && !currentValue.length))
+                //     ) {
+                //       return this.createError({
+                //         path: `${this.path}`,
+                //         message: 'Please choose video',
+                //       });
+                //     }
+                //     return true;
+                //   },
+                // ),
                 answerContent: yup
                   .string()
                   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
               }),
+            )
+            .test(
+              'requireVideo',
+              'Please choose video.',
+              function validateBg(currentAnswers) {
+                const errorVideoIdxs = [];
+                if (
+                  this.parent.layout === 'FIXED' &&
+                  currentAnswers &&
+                  currentAnswers?.length > 0
+                ) {
+                  for (let i = 0; i < currentAnswers.length; i++) {
+                    if (
+                      !currentAnswers[i].video ||
+                      currentAnswers[i].video?.length === 0
+                    ) {
+                      errorVideoIdxs.push(i);
+                    }
+                  }
+                  if (errorVideoIdxs.length > 0) {
+                    return this.createError({
+                      path: `${this.path}`,
+                      message: 'Please choose video.',
+                    });
+                  }
+                }
+                return true;
+              },
             )
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
@@ -186,7 +254,7 @@ const AnswerLibraryEditPage: React.FC = () => {
       .required(t('POLARIS.REQUIRED_ERROR_MSG')),
   });
 
-  const editFormMethods = useForm<EditTemplateFormInterface>({
+  const formMethods = useForm<EditTemplateFormInterface>({
     resolver: yupResolver(editFormSchema),
     defaultValues: {},
   });
@@ -198,7 +266,7 @@ const AnswerLibraryEditPage: React.FC = () => {
         const detailResponse = await topicService.getBySlug(_slug);
         const {
           _id,
-          link_chart,
+          chart_symbol,
           type,
           name,
           contentTopics: contentTopicsRes,
@@ -218,9 +286,13 @@ const AnswerLibraryEditPage: React.FC = () => {
             vBee_audio_body,
             vBee_audio_conclusion,
             vBee_audio_opening,
+            content_name,
+            type: contentTopicType,
           } = ct;
           return {
             _id: ct._id,
+            type: contentTopicType || 'manual',
+            content_name: content_name || '',
             ...(video_opening?.length > 0 && {
               video_opening: [
                 {
@@ -275,12 +347,11 @@ const AnswerLibraryEditPage: React.FC = () => {
           const slugTopic = group.slug_topic;
           return {
             _id: group._id,
-            content: group.content,
+            content: group.question,
             keywords: keywords,
             priority: `${group.priority || 1}`,
-            layout: `${group.layout || 'layout-2'}`,
+            layout: `${group.group_content_type || 'FIXED'}`,
             answerVideo: group.answers.map((answer: any, idx: number) => ({
-              videoLayout: answer.layout,
               answerContent: answer.answer_content,
               ...(answer?.video?.length > 0 && {
                 video: [
@@ -299,25 +370,32 @@ const AnswerLibraryEditPage: React.FC = () => {
 
         const mappingDetail = {
           topicName: name,
-          link_chart,
+          chart_symbol,
           type,
           contentTopic:
             contentTopic && contentTopic?.length > 0
               ? contentTopic
               : [
                   {
-                    content_opening: '',
+                    type: 'manual',
+                    layout: 'layout-1',
                   },
                 ],
-          answerGroup,
+          answerGroup:
+            answerGroup && answerGroup?.length > 0
+              ? answerGroup
+              : [
+                  {
+                    priority: '1',
+                    layout: 'layout-1',
+                  },
+                ],
         };
-
-        console.log('mappingDetail:', mappingDetail);
 
         type FormKey = keyof typeof mappingDetail;
         Object.keys(mappingDetail).map((key) => {
           const fieldKey: FormKey = `${key}` as FormKey;
-          editFormMethods.setValue(fieldKey as any, mappingDetail[fieldKey]);
+          formMethods.setValue(fieldKey as any, mappingDetail[fieldKey]);
         });
       } catch (error) {
       } finally {
@@ -355,14 +433,15 @@ const AnswerLibraryEditPage: React.FC = () => {
     try {
       console.log('edit form values:', values);
       setLoading(true);
-      const { topicName, type, link_chart, contentTopic, answerGroup } = values;
+      const { topicName, type, chart_symbol, contentTopic, answerGroup } =
+        values;
       // Update topic
       if (topicId) {
         await topicService.update(topicId, {
           name: topicName,
           type,
-          ...(link_chart && {
-            link_chart: link_chart,
+          ...(chart_symbol && {
+            chart_symbol: chart_symbol,
           }),
         });
         // Delete content topic ids
@@ -394,9 +473,7 @@ const AnswerLibraryEditPage: React.FC = () => {
                 layout,
                 background,
               } = contentTopic[index];
-              if (link_chart) {
-                contentTopicFormData.append('link_chart', link_chart);
-              }
+
               contentTopicFormData.append('topic_id', topicId);
               if (video_opening?.[0]?.originFileObj) {
                 contentTopicFormData.append(
@@ -424,7 +501,10 @@ const AnswerLibraryEditPage: React.FC = () => {
                 'content_conclusion',
                 content_conclusion,
               );
-              contentTopicFormData.append('layout', layout as string);
+              contentTopicFormData.append(
+                'group_content_type',
+                layout as string,
+              );
               if (background?.[0]?.originFileObj) {
                 contentTopicFormData.append(
                   'background',
@@ -479,11 +559,12 @@ const AnswerLibraryEditPage: React.FC = () => {
             const answerSuccess = [];
             for (let index = 0; index < answerGroup.length; index++) {
               const groupFormData = new FormData();
-              const { _id, priority, content, keywords, answerVideo } =
+              const { _id, priority, content, layout, keywords, answerVideo } =
                 answerGroup[index];
               groupFormData.append('topic_id', topicId);
-              groupFormData.append('group_content', content);
+              groupFormData.append('question', content);
               groupFormData.append('priority', priority);
+              groupFormData.append('group_content_type', layout);
               (keywords || []).map((kw: string) => {
                 groupFormData.append('keywords[]', kw);
               });
@@ -494,10 +575,6 @@ const AnswerLibraryEditPage: React.FC = () => {
                     av.video[0]?.originFileObj,
                   );
                 }
-                groupFormData.append(
-                  `answer_layout_${idx + 1}`,
-                  av.videoLayout,
-                );
                 groupFormData.append(
                   `answer_content_${idx + 1}`,
                   av.answerContent,
@@ -555,69 +632,24 @@ const AnswerLibraryEditPage: React.FC = () => {
     }
   };
 
+  console.log('formMethods.formState.errors:', formMethods.formState.errors);
+
   return (
     <>
       <PageTitle>{`${t('POLARIS.EDIT_ANSWER')}`}</PageTitle>
       <BaseFormTitle>{`${t('POLARIS.EDIT_ANSWER')}`}</BaseFormTitle>
       <EditTemplate
+        showCancel
+        onCancel={() => navigate('/answer-library')}
         saveButtonProps={{ loading: loading || loadingUploadArray }}
       >
-        <FormProvider {...editFormMethods}>
+        <FormProvider {...formMethods}>
           <EditTemplate.Form
-            onSubmit={editFormMethods.handleSubmit(onEditSubmitForm)}
+            onSubmit={formMethods.handleSubmit(onEditSubmitForm)}
           >
+            <TopicInfoField />
             <BaseTabs>
               <BaseTabs.TabPane tab={`${t('POLARIS.INFORMATION')}`} key="1">
-                <div className="bg-white rounded-lg p-3 mb-3">
-                  <BaseRow gutter={24}>
-                    <BaseCol xs={24} lg={12}>
-                      <TextField
-                        required={true}
-                        label={t('POLARIS.TOPIC')}
-                        name="topicName"
-                        placeholder={t('POLARIS.INSERT_TOPIC_NAME')}
-                      />
-                    </BaseCol>
-                    <BaseCol xs={24} lg={12}>
-                      <RadioGroupField
-                        name={`type`}
-                        label="Content type"
-                        options={[
-                          {
-                            label: 'Chart',
-                            value: 'CHART',
-                          },
-                          {
-                            label: 'Image',
-                            value: 'IMAGE',
-                          },
-                        ]}
-                      />
-                    </BaseCol>
-                  </BaseRow>
-                  <BaseRow gutter={24}>
-                    <BaseCol xs={0} lg={12}></BaseCol>
-                    <BaseCol xs={0} lg={12}>
-                      <SelectField
-                        required
-                        label={t('POLARIS.CHART')}
-                        placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
-                        name="link_chart"
-                        options={[
-                          // { label: 'DXY', value: 'DXY' },
-                          { label: 'XAUUSD', value: 'XAUUSD' },
-                          { label: 'EURUSD', value: 'EURUSD' },
-                          { label: 'GBPUSD', value: 'GBPUSD' },
-                          { label: 'USDJPY', value: 'USDJPY' },
-                          // { label: 'USTEC', value: 'USTEC' },
-                          // { label: 'USOIL', value: 'USOIL' },
-                          { label: 'BTCUSDT', value: 'BTCUSDT' },
-                        ]}
-                      />
-                    </BaseCol>
-                  </BaseRow>
-                </div>
-
                 <div className="bg-white p-4 mb-4">
                   <LibraryContentField
                     fieldName="contentTopic"

@@ -453,34 +453,36 @@ const AnswerLibraryScriptTopicPage: React.FC = () => {
           >
             <BaseTabs>
               <BaseTabs.TabPane tab={`${t('POLARIS.INFORMATION')}`} key="1">
-                <BaseRow gutter={24}>
-                  <BaseCol xs={24} lg={12}>
-                    <TextField
-                      required={true}
-                      label={t('POLARIS.TOPIC')}
-                      name="topicName"
-                      placeholder={t('POLARIS.INSERT_TOPIC_NAME')}
-                    />
-                  </BaseCol>
-                  <BaseCol xs={24} lg={12}>
-                    <SelectField
-                      required
-                      label={t('POLARIS.CHART')}
-                      placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
-                      name="link_chart"
-                      options={[
-                        // { label: 'DXY', value: 'DXY' },
-                        { label: 'XAUUSD', value: 'XAUUSD' },
-                        { label: 'EURUSD', value: 'EURUSD' },
-                        { label: 'GBPUSD', value: 'GBPUSD' },
-                        { label: 'USDJPY', value: 'USDJPY' },
-                        // { label: 'USTEC', value: 'USTEC' },
-                        // { label: 'USOIL', value: 'USOIL' },
-                        { label: 'BTCUSDT', value: 'BTCUSDT' },
-                      ]}
-                    />
-                  </BaseCol>
-                </BaseRow>
+                <div className="bg-white rounded-lg p-3 mb-3">
+                  <BaseRow gutter={24}>
+                    <BaseCol xs={24} lg={12}>
+                      <TextField
+                        required={true}
+                        label={t('POLARIS.TOPIC')}
+                        name="topicName"
+                        placeholder={t('POLARIS.INSERT_TOPIC_NAME')}
+                      />
+                    </BaseCol>
+                    <BaseCol xs={24} lg={12}>
+                      <SelectField
+                        required
+                        label={t('POLARIS.CHART')}
+                        placeholder={`${t('POLARIS.SELECT_CHART_PLACEHOLDER')}`}
+                        name="link_chart"
+                        options={[
+                          // { label: 'DXY', value: 'DXY' },
+                          { label: 'XAUUSD', value: 'XAUUSD' },
+                          { label: 'EURUSD', value: 'EURUSD' },
+                          { label: 'GBPUSD', value: 'GBPUSD' },
+                          { label: 'USDJPY', value: 'USDJPY' },
+                          // { label: 'USTEC', value: 'USTEC' },
+                          // { label: 'USOIL', value: 'USOIL' },
+                          { label: 'BTCUSDT', value: 'BTCUSDT' },
+                        ]}
+                      />
+                    </BaseCol>
+                  </BaseRow>
+                </div>
                 {/* <RadioGroupField
                   name={`type`}
                   label="Select topic type"

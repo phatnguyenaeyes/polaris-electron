@@ -247,6 +247,8 @@ a {
 
   .form-item__label {
     font-size: 17px;
+    margin-bottom: 8px;
+    color: #000;
   }
 
   &.form-item--disabled {
@@ -310,6 +312,7 @@ margin-bottom: 21px;
   margin-bottom: 8px;
   font-size: 17px;
   font-style: normal;
+  color: #000;
 }
 
 .checkbox-group__item {
@@ -363,6 +366,7 @@ margin-bottom: 21px;
   margin-bottom: 8px;
   font-size: 17px;
   font-style: normal;
+  color: #000;
 }
 
 .radio-group__item {
@@ -432,7 +436,7 @@ margin-bottom: 21px;
   }
 }
 
-.upload-list-file-custom-doc { 
+.upload-list-file-custom-doc {
   .ant-btn {
     background: #858585;
     border-radius: 18px;
@@ -453,6 +457,12 @@ margin-bottom: 21px;
   .form-item__label {
     color: black;
     margin-bottom: 8px;
+  }
+}
+
+.react-select_selector {
+  .rselect__control {
+    height: 52px;
   }
 }
 `;

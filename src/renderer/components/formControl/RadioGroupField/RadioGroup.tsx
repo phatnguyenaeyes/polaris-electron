@@ -4,6 +4,7 @@ import { Col, RadioChangeEvent, RadioGroupProps, Row, Space } from 'antd';
 import classNames from 'classnames';
 import _map from 'lodash/map';
 import { FieldError } from 'react-hook-form';
+import * as S from './RadioGroup.styles';
 
 const { Button: RadioButton } = BaseRadio;
 
@@ -21,6 +22,7 @@ export interface BaseRadioGroupProps extends BaseRadioProps {
   onChange?: (checkedValue: RadioChangeEvent) => void;
   required?: boolean;
   fieldError?: FieldError;
+  displayAsTab?: boolean;
   label?: string;
   options?: SelectItem[];
   name: string;
@@ -34,6 +36,7 @@ const RadioGroup: React.FC<BaseRadioGroupProps> = (props) => {
     options,
     required,
     fieldError,
+    displayAsTab,
     ...remaningProps
   } = props;
   const isError = !!fieldError;
@@ -65,15 +68,16 @@ const RadioGroup: React.FC<BaseRadioGroupProps> = (props) => {
         </label>
         <div className="pb-2">
           <div>
-            <BaseRadio.Group
+            <S.BaseRadioGroup
               {...remaningProps}
               style={{ width: '100%' }}
+              $displayAsTab={displayAsTab}
               buttonStyle="solid"
               onChange={onChange}
               value={value}
             >
               <BaseSpace size="large">{radioElements}</BaseSpace>
-            </BaseRadio.Group>
+            </S.BaseRadioGroup>
           </div>
           {isError && (
             <Space size={4} className="text-error">

@@ -18,6 +18,9 @@ export const topicService = {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
+  createContentTopicAi: (data: any): Promise<any> => {
+    return httpClient.post('/v1/content-topic/ai', data);
+  },
   updateContentTopic: (contentTopicId: string, data: any): Promise<any> => {
     return httpClient.put(`/v1/content-topic/${contentTopicId}`, data, {
       headers: { 'Content-Type': 'multipart/form-data' },
@@ -29,7 +32,10 @@ export const topicService = {
   update: (topicId: string, data: any): Promise<any> => {
     return httpClient.put(`/v1/topic/${topicId}`, data);
   },
-  updateTopicGroups: (topicId: string, data: { groups: string[] }): Promise<any> => {
+  updateTopicGroups: (
+    topicId: string,
+    data: { groups: string[] },
+  ): Promise<any> => {
     return httpClient.put(`/topic/update-group-for-topic/${topicId}`, data);
   },
 };

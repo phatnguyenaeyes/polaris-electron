@@ -1,9 +1,13 @@
-import { BaseSelect, BaseSelectProps } from '@app/components/common/selects/BaseSelect/BaseSelect';
+import {
+  BaseSelect,
+  BaseSelectProps,
+} from '@app/components/common/selects/BaseSelect/BaseSelect';
 import { Space } from 'antd';
 import React from 'react';
 import { Controller, FieldError, useFormContext } from 'react-hook-form';
 
-type BaseSelectFieldProps = BaseSelectProps & React.RefAttributes<HTMLDivElement>;
+type BaseSelectFieldProps = BaseSelectProps &
+  React.RefAttributes<HTMLDivElement>;
 
 interface SelectItem {
   label: string;
@@ -45,7 +49,11 @@ const SelectFieldBase: React.FC<SelectBaseProps> = (props) => {
   };
 
   return (
-    <div className={`form-item${isError ? ' form-item--has-error' : ''}${disabled ? ' form-item--disabled' : ''}`}>
+    <div
+      className={`form-item${isError ? ' form-item--has-error' : ''}${
+        disabled ? ' form-item--disabled' : ''
+      }`}
+    >
       <div className="form-item_inner">
         {label && (
           <label className="form-item__label">
@@ -66,10 +74,11 @@ const SelectFieldBase: React.FC<SelectBaseProps> = (props) => {
             optionFilterProp="children"
             onSearch={onSearch}
             filterOption={(input, option) =>
-              ((option?.label ?? '') as string).toLowerCase().includes(input.toLowerCase())
+              ((option?.label ?? '') as string)
+                .toLowerCase()
+                .includes(input.toLowerCase())
             }
             options={options}
-            notFoundContent="Không có dữ liệu"
           />
         </div>
       </div>

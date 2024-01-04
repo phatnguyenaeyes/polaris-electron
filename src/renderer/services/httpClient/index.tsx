@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 
-const baseURL = `https://staging.polarista.ai/api`;
+const baseURL = `http://localhost:8082/api`;
 
 const httpClient = axios.create({
   baseURL,

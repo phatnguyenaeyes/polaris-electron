@@ -16,13 +16,17 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   fieldName: string;
+  fieldIndex: number;
   parrentFieldname: string;
 }
 
-const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
+const AnswerFieldArray: React.FC<Props> = ({
+  fieldName,
+  fieldIndex,
+  parrentFieldname,
+}) => {
   const { t } = useTranslation();
-  const { control, formState, watch } = useFormContext();
-  const [activeTab, setActiveTab] = useState(0);
+  const { formState, control, watch } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     name: fieldName,
     control,
@@ -31,63 +35,58 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
   const videoLayoutValue = watch(`${parrentFieldname}.layout`);
 
   return (
-    <div
-      style={{
-        marginBottom: '24px',
-      }}
-    >
-      {fields.map((item, index) => {
-        return (
-          <div
-            key={item.id}
-            style={{
-              marginBottom: '24px',
-            }}
-          >
-            <div>
-              <BaseRow>
-                <BaseCol xs={24} lg={24}>
-                  {videoLayoutValue === 'layout-2' ? (
-                    <TextField
-                      name={`${fieldName}.${index}.answerContent`}
-                      textArea
-                    />
-                  ) : (
-                    <UploadListField
-                      required
-                      videoOnly
-                      placeholder={t('POLARIS.UPLOAD_VIDEO')}
-                      label={t('POLARIS.ANSWER')}
-                      suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
-                      name={`${fieldName}.${index}.video`}
-                      maxLength={1}
-                    />
-                  )}
-                  {fields.length > 1 ? (
-                    <div
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <BaseButton
-                        htmlType="button"
-                        type="dashed"
-                        danger
-                        onClick={() => {
-                          remove(index);
-                        }}
-                      >
-                        {t('POLARIS.DELETE')}
-                      </BaseButton>
-                    </div>
-                  ) : null}
-                </BaseCol>
-              </BaseRow>
-            </div>
-          </div>
-        );
-      })}
+    <div className="mb-4">
+      <BaseRow gutter={24}>
+        {fields.map((item, index) => {
+          return (
+            <BaseCol xs={24} lg={12} key={item.id} className="mb-4">
+              {fields.length > 1 ? (
+                <div className="flex justify-end mb-2">
+                  <BaseButton
+                    htmlType="button"
+                    size="small"
+                    type="dashed"
+                    danger
+                    onClick={() => {
+                      remove(index);
+                    }}
+                  >
+                    {t('POLARIS.DELETE')}
+                  </BaseButton>
+                </div>
+              ) : null}
+              {videoLayoutValue === 'FLEXIBLE' ? (
+                <TextField
+                  name={`${fieldName}.${index}.answerContent`}
+                  textArea
+                />
+              ) : (
+                <UploadListField
+                  required
+                  videoOnly
+                  placeholder={t('POLARIS.UPLOAD_VIDEO')}
+                  label={t('POLARIS.ANSWER')}
+                  suffixHelpText={t('POLARIS.FORMAT_SUGGESTION_01')}
+                  name={`${fieldName}.${index}.video`}
+                  maxLength={1}
+                />
+              )}
+              {formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                ?.type === 'requireVideo' &&
+                formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                  ?.message && (
+                  <div style={{ color: '#ff4d4f' }}>
+                    {
+                      formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                        ?.message as string
+                    }
+                  </div>
+                )}
+            </BaseCol>
+          );
+        })}
+      </BaseRow>
+
       <br />
       <div
         style={{
@@ -100,7 +99,6 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
           htmlType="button"
           onClick={() => {
             append({ video: '', name: '', videoLayout: 'layout1' });
-            setActiveTab(fields.length || 0);
           }}
         >
           <PlusCircleOutlined className="" />

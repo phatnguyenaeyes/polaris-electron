@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useLayoutEffect, useRef } from 'react';
+import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import UploadListField from '@app/components/formControl/UploadListField';
 import { S3_DOMAIN_URL } from '@app/constants/url';
@@ -6,11 +6,11 @@ import { notificationController } from '@app/controllers/notificationController'
 import { liveDevSettingService } from '@app/services/liveDevSetting.service';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { isEmpty } from 'lodash';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
-import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import * as yup from 'yup';
 import { LiveDevSettingsInterface } from './interface';
-import { BaseButton } from '@app/components/common/BaseButton/BaseButton';
 
 const LiveConfigEditForm: React.FC<{
   liveDevSettings: LiveDevSettingsInterface;

@@ -113,7 +113,15 @@
     "CONFIGURE_TOPIC_GROUP":"Configure topic group",
     "SEARCH_TOPICS":"Search topics",
     "PROMPT":"Prompt",
-    "DATE_CREATED": "Date created"
+    "DATE_CREATED": "Date created",
+    "CATEGORY_QUESTIONS":"Category questions",
+    "QUESTION_TOPIC":"Question topic",
+    "GENERAL_QUESTIONS":"General Questions",
+    "UPDATER":"Updater",
+    "ADD_NEW_QUESTION_SET":"Add new question set",
+    "GENERAL_QUESTIONS_SET":"General questions set",
+    "ENTER_YOUR_QUESTION_HERE":"Enter your question here",
+    "ENTER_YOUR_QUESTION_TOPIC":"Enter your question topic"    
   },
   "alerts": {
     "accept": "Accept",

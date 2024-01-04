@@ -113,7 +113,15 @@
     "CONFIGURE_TOPIC_GROUP":"Cấu hình nhóm chủ đề",
     "SEARCH_TOPICS":"Tìm kiếm chủ đề",
     "PROMPT":"Lời nhắc",
-    "DATE_CREATED": "Ngày tạo"
+    "DATE_CREATED": "Ngày tạo",
+    "CATEGORY_QUESTIONS":"Những câu hỏi chuyên mục",
+    "QUESTION_TOPIC":"Chủ đề câu hỏi",
+    "GENERAL_QUESTIONS":"Những câu hỏi chung",
+    "UPDATER":"Người cập nhập",
+    "ADD_NEW_QUESTION_SET":"Thêm bộ câu hỏi mới",
+    "GENERAL_QUESTIONS_SET":"Bộ câu hỏi chung",
+    "ENTER_YOUR_QUESTION_HERE":"Vui lòng nhập câu hỏi của bạn",
+    "ENTER_YOUR_QUESTION_TOPIC":"Vui lòng nhập chủ đề câu hỏi"    
   },
   "alerts": {
     "accept": "Accept",

@@ -442,4 +442,17 @@ margin-bottom: 21px;
     padding: 11px 15px;
   }
 }
+
+.text-field-custom {
+  .form-text-field {
+    background:  #FAFAFA;
+    border-radius: 12px;
+    border: 1.5px solid rgba(0, 0, 0, 0.08);
+    background: #FAFAFA;
+  }
+  .form-item__label {
+    color: black;
+    margin-bottom: 8px;
+  }
+}
 `;

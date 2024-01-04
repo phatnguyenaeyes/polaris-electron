@@ -65,6 +65,13 @@ const ScenarioConfigDetailPage = React.lazy(
   () => import('@app/pages/ScenarioConfigPage/ScenarioConfigDetail'),
 );
 
+const CategoryQuestionsPage = React.lazy(
+  () => import('@app/pages/CategoryQuestionsPage'),
+);
+const CategoryQuestionsCreatePage = React.lazy(
+  () => import('@app/pages/CategoryQuestionsPage/CreatePage'),
+);
+
 const Error404Page = React.lazy(() => import('@app/pages/Error404Page'));
 const PersonalInfoPage = React.lazy(
   () => import('@app/pages/PersonalInfoPage'),
@@ -190,6 +197,11 @@ const Routing = () => {
       {
         path: 'category-questions',
         element: <MainLayout />,
+        children: [
+          { path: '', element: <CategoryQuestionsPage /> },
+          { path: 'create', element: <CategoryQuestionsCreatePage /> },
+          { path: 'edit', element: <div>Edit</div> },
+        ],
       },
       {
         path: 'server-error',

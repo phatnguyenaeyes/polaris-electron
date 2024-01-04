@@ -1,6 +1,5 @@
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { BaseFormTitle } from '@app/components/common/forms/components/BaseFormTitle/BaseFormTitle';
-import TextField from '@app/components/formControl/TextField';
 import { EditTemplate } from '@app/components/templates/FormTemplate/EditTemplate';
 import { S3_DOMAIN_URL } from '@app/constants/url';
 import { notificationController } from '@app/controllers/notificationController';
@@ -12,13 +11,9 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import { BaseTabs } from '@app/components/common/BaseTabs/BaseTabs';
-import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import LibraryContentField from './components/LibraryContentField';
 import QuestionAndAnswerField from './components/QuestionAndAnswerField';
 import { useTranslation } from 'react-i18next';
-import SelectField from '@app/components/formControl/SelectField';
-import RadioGroupField from '@app/components/formControl/RadioGroupField';
 import { TopicInfoField } from './components/TopicInfoField';
 
 interface EditTemplateFormInterface {
@@ -53,6 +48,7 @@ interface EditTemplateFormInterface {
     priority: string;
     content: string;
     keywords: string[];
+    layout: string;
     answerVideo: {
       video: any;
       videoLayout: string;
@@ -84,11 +80,29 @@ const AnswerLibraryEditPage: React.FC = () => {
       .array()
       .of(
         yup.object().shape({
+          type: yup.string().required(t('POLARIS.REQUIRED_ERROR_MSG')),
+          url: yup.string().when('type', (type, schema) => {
+            if (type === 'ai') {
+              return schema
+                .required(t('POLARIS.REQUIRED_ERROR_MSG'))
+                .matches(
+                  /^(https?):\/\/[^\s$.?#].[^\s]*$/,
+                  'Please enter valid url',
+                );
+            }
+            return schema.notRequired();
+          }),
+          prompt: yup.string().when('type', (type, schema) => {
+            if (type === 'ai') {
+              return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
+            }
+            return schema.notRequired();
+          }),
           video_opening: yup
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-2') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -96,7 +110,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_opening: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-1') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -105,7 +119,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-2') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -113,7 +127,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_body: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-1') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -122,7 +136,7 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .nullable()
             .when('layout', (layout, schema) => {
-              if (layout === 'layout-2') {
+              if (layout === 'FIXED') {
                 return schema
                   .min(1, 'Tối thiểu 1')
                   .required(t('POLARIS.REQUIRED_ERROR_MSG'));
@@ -130,7 +144,7 @@ const AnswerLibraryEditPage: React.FC = () => {
               return schema;
             }),
           content_conclusion: yup.string().when('layout', (layout, schema) => {
-            if (layout === 'layout-1') {
+            if (layout === 'FLEXIBLE') {
               return schema.required(t('POLARIS.REQUIRED_ERROR_MSG'));
             }
             return schema;
@@ -178,11 +192,59 @@ const AnswerLibraryEditPage: React.FC = () => {
             .array()
             .of(
               yup.object().shape({
-                video: yup.array().nullable(),
+                video: yup.array(),
+                // .test(
+                //   'requireVideo',
+                //   'Please choose video.',
+                //   function validateBg(currentValue) {
+                //     console.log('this.path:', this.path);
+                //     console.log('this:', this);
+
+                //     if (
+                //       this.parent.layout === 'FIXED' &&
+                //       (!currentValue ||
+                //         (currentValue && !currentValue.length))
+                //     ) {
+                //       return this.createError({
+                //         path: `${this.path}`,
+                //         message: 'Please choose video',
+                //       });
+                //     }
+                //     return true;
+                //   },
+                // ),
                 answerContent: yup
                   .string()
                   .required(t('POLARIS.REQUIRED_ERROR_MSG')),
               }),
+            )
+            .test(
+              'requireVideo',
+              'Please choose video.',
+              function validateBg(currentAnswers) {
+                const errorVideoIdxs = [];
+                if (
+                  this.parent.layout === 'FIXED' &&
+                  currentAnswers &&
+                  currentAnswers?.length > 0
+                ) {
+                  for (let i = 0; i < currentAnswers.length; i++) {
+                    if (
+                      !currentAnswers[i].video ||
+                      currentAnswers[i].video?.length === 0
+                    ) {
+                      errorVideoIdxs.push(i);
+                    }
+                  }
+                  if (errorVideoIdxs.length > 0) {
+                    return this.createError({
+                      path: `${this.path}`,
+                      message: 'Please choose video.',
+                    });
+                  }
+                }
+                return true;
+              },
             )
             .min(1, 'Vui lòng chọn ít nhất một tuỳ chọn')
             .required(t('POLARIS.REQUIRED_ERROR_MSG')),
@@ -290,7 +352,6 @@ const AnswerLibraryEditPage: React.FC = () => {
             priority: `${group.priority || 1}`,
             layout: `${group.group_content_type || 'FIXED'}`,
             answerVideo: group.answers.map((answer: any, idx: number) => ({
-              videoLayout: answer.layout,
               answerContent: answer.answer_content,
               ...(answer?.video?.length > 0 && {
                 video: [
@@ -498,11 +559,12 @@ const AnswerLibraryEditPage: React.FC = () => {
             const answerSuccess = [];
             for (let index = 0; index < answerGroup.length; index++) {
               const groupFormData = new FormData();
-              const { _id, priority, content, keywords, answerVideo } =
+              const { _id, priority, content, layout, keywords, answerVideo } =
                 answerGroup[index];
               groupFormData.append('topic_id', topicId);
               groupFormData.append('question', content);
               groupFormData.append('priority', priority);
+              groupFormData.append('group_content_type', layout);
               (keywords || []).map((kw: string) => {
                 groupFormData.append('keywords[]', kw);
               });
@@ -513,10 +575,6 @@ const AnswerLibraryEditPage: React.FC = () => {
                     av.video[0]?.originFileObj,
                   );
                 }
-                groupFormData.append(
-                  `answer_layout_${idx + 1}`,
-                  av.videoLayout,
-                );
                 groupFormData.append(
                   `answer_content_${idx + 1}`,
                   av.answerContent,
@@ -573,6 +631,8 @@ const AnswerLibraryEditPage: React.FC = () => {
       setLoading(false);
     }
   };
+
+  console.log('formMethods.formState.errors:', formMethods.formState.errors);
 
   return (
     <>

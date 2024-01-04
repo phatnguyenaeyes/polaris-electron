@@ -1,7 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { BaseCol } from '@app/components/common/BaseCol/BaseCol';
 import { BaseRow } from '@app/components/common/BaseRow/BaseRow';
-import TextField from '@app/components/formControl/TextField';
 import React, { useState } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import * as S from '../AnswerLibrary.styles';
@@ -158,6 +157,7 @@ const QuestionAndAnswerField: React.FC<Props> = ({ fieldName, onDelete }) => {
           </BaseRow>
           <AnswerFieldArray
             parrentFieldname={`${fieldName}.${index}`}
+            fieldIndex={index}
             fieldName={`${fieldName}.${index}.answerVideo`}
           />
         </S.ActiveTabContainer>

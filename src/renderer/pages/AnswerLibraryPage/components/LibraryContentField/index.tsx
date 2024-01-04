@@ -24,31 +24,6 @@ interface Props {
   onDelete?: (contentTopicId: string) => void;
 }
 
-const AudioGroup = ({ arr, slug }: { arr: any; slug: any }) => {
-  const humanAudioListRef = useRef<any>([]);
-  const onAudioPlay = (audioIdx: number) => {
-    arr.map((item: any, idx: number) => {
-      if (audioIdx !== idx) {
-        if (humanAudioListRef.current[idx]) {
-          humanAudioListRef.current[idx]?.stopAndReset();
-        }
-      }
-    });
-  };
-  return (
-    <div className="flex flex-row flex-wrap" style={{ gap: '20px' }}>
-      {arr?.map((url: string, idx: number) => (
-        <SimpleAudioPlayerButton
-          key={idx}
-          src={`${S3_DOMAIN_URL}/${slug}/${url}`}
-          ref={(el) => (humanAudioListRef.current[idx] = el)}
-          onPlay={() => onAudioPlay(idx)}
-        />
-      ))}
-    </div>
-  );
-};
-
 const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
   const { t } = useTranslation();
   const { slug } = useParams<any>();
@@ -90,7 +65,7 @@ const LibraryContentField: React.FC<Props> = ({ fieldName, onDelete }) => {
                 append({
                   video_opening: '',
                   content_opening: '',
-                  layout: 'layout-1',
+                  layout: 'FLEXIBLE',
                 });
                 setActiveTab(fields.length || 0);
               }}

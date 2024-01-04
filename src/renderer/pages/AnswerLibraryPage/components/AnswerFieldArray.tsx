@@ -16,12 +16,17 @@ import { useTranslation } from 'react-i18next';
 
 interface Props {
   fieldName: string;
+  fieldIndex: number;
   parrentFieldname: string;
 }
 
-const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
+const AnswerFieldArray: React.FC<Props> = ({
+  fieldName,
+  fieldIndex,
+  parrentFieldname,
+}) => {
   const { t } = useTranslation();
-  const { control, watch } = useFormContext();
+  const { formState, control, watch } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     name: fieldName,
     control,
@@ -66,6 +71,17 @@ const AnswerFieldArray: React.FC<Props> = ({ fieldName, parrentFieldname }) => {
                   maxLength={1}
                 />
               )}
+              {formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                ?.type === 'requireVideo' &&
+                formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                  ?.message && (
+                  <div style={{ color: '#ff4d4f' }}>
+                    {
+                      formState.errors?.answerGroup?.[fieldIndex]?.answerVideo
+                        ?.message as string
+                    }
+                  </div>
+                )}
             </BaseCol>
           );
         })}
